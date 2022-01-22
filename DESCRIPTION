@@ -14,4 +14,5 @@ Imports:
     magrittr,
     purrr,
     stringr
-URL: https://johnaclouse.github.io/eeda/
+URL: https://github.com/johnaclouse/eeda
+BugReports: https://github.com/johnaclouse/eeda/issues
