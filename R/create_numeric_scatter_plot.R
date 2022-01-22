@@ -4,20 +4,20 @@ create_numeric_scatter_plot <-
            height = 400 / 72,
            dpi = 72) {
     n <- dplyr::pull(x)
-    x_w <- na.omit(n)
+    x_w <- stats::na.omit(n)
     x_o <- grDevices::boxplot.stats(x_w)$out
-    x_wo <- na.omit(ifelse(x_w %in% x_o, NA, x_w))
+    x_wo <- stats::na.omit(ifelse(x_w %in% x_o, NA, x_w))
     x_o_floor <- grDevices::boxplot.stats(x_w)$stats[1]
     x_o_ceiling <- grDevices::boxplot.stats(x_w)$stats[5]
     x_w_05 <- unname(stats::quantile(x_w, 0.05, na.rm = TRUE))
-    x_w_median <- mean(x_w, na.rm = TRUE)
+    x_w_median <- stats::median(x_w, na.rm = TRUE)
     x_w_95 <- unname(stats::quantile(x_w, 0.95, na.rm = TRUE))
-    
+
     # if (length(x_w) > 100000) {
     #   temp <- round_points(x_w)
     #   # plot_data <- x_w[!duplicated(temp)]
     #   plot_data <- sample(x_w, 100000)
-    #   rounded_label <- ggplot2::geom_text(ggplot2::aes(x = Inf, y = -Inf, 
+    #   rounded_label <- ggplot2::geom_text(ggplot2::aes(x = Inf, y = -Inf,
     #                                  hjust = 1,
     #                                  vjust = -0.1,
     #                                  label = "Points down sampled to 100,000 to reduce overplotting"))
@@ -95,7 +95,7 @@ create_numeric_scatter_plot <-
         axis.title.y = ggplot2::element_blank()
       ) +
       ggplot2::theme(plot.margin = grid::unit(c(5, 30, 5, 5), "pt"))
-    
+
     png_file <- tempfile(fileext = ".png")
     ggplot2::ggsave(
       filename = png_file,

@@ -31,3 +31,6 @@ Imports:
     tidyr
 URL: https://github.com/johnaclouse/eeda
 BugReports: https://github.com/johnaclouse/eeda/issues
+Depends: 
+    R (>= 2.10)
+LazyData: true

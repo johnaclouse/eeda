@@ -36,7 +36,7 @@ create_discrete_summary_table <- function(x) {
   n_missing <- sum(is.na(dplyr::pull(x)))
   n_nonmissing <- sum(!is.na(dplyr::pull(x)))
   missing_ratio <- n_missing / n_x
-  x_w <- na.omit(dplyr::pull(x))
+  x_w <- stats::na.omit(dplyr::pull(x))
   x_w_mean <- mean(x_w, na.rm = TRUE)
   values <- unique(dplyr::pull(x))
   unique_n <- length(unique(x_w))

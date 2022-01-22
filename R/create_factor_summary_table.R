@@ -24,7 +24,7 @@ factor_css <- "
 create_factor_summary_table <- function (x) {
   x_table <- tidyr::as_tibble(table(x))
   x_table$x <- forcats::fct_reorder(x_table$x, x_table$n, desc = T)
-  x_table <- arrange(x_table, dplyr::desc(n))
+  x_table <- dplyr::arrange(x_table, dplyr::desc(n))
   n_xzv <-
     dplyr::if_else(
       caret::nearZeroVar(x, saveMetrics = TRUE)$nzv,
@@ -37,7 +37,7 @@ create_factor_summary_table <- function (x) {
   empty_ratio <- n_empty / n_x
   n_nonmissing <- sum(!is.na(dplyr::pull(x)))
   missing_ratio <- n_missing / n_x
-  x_w <- na.omit(dplyr::pull(x))
+  x_w <- stats::na.omit(dplyr::pull(x))
   unique_n <- length(unique(x_w))
 
   style <- "'

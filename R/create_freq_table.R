@@ -37,9 +37,9 @@ create_freq_table <- function(x,
   result$css <- paste(div, style)
 
   x_name <- names(x)
-  html_table <- na.omit(x) %>%
+  html_table <- stats::na.omit(x) %>%
     dplyr::group_by(dplyr::across(all_of(x_name))) %>%
-    dplyr::summarize(n = n()) %>%
+    dplyr::summarize(n = dplyr::n()) %>%
     dplyr::mutate(Proportion = round(n / sum(n), 2)) %>%
     dplyr::arrange(dplyr::desc(n)) %>%
     dplyr::slice(1:max_lines)

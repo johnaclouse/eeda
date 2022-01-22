@@ -5,9 +5,9 @@ create_numeric_distribution_plot <-
            height = 400 / 72,
            dpi = 72) {
     n <- dplyr::pull(x)
-    x_w <- na.omit(n)
+    x_w <- stats::na.omit(n)
     x_o <- grDevices::boxplot.stats(x_w)$out
-    x_wo <- na.omit(ifelse(x_w %in% x_o, NA, x_w))
+    x_wo <- stats::na.omit(ifelse(x_w %in% x_o, NA, x_w))
     x_o_floor <- grDevices::boxplot.stats(x_w)$stats[1]
     x_o_ceiling <- grDevices::boxplot.stats(x_w)$stats[5]
     x_w_05 <- unname(stats::quantile(x_w, 0.05, na.rm = TRUE))

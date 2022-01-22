@@ -28,7 +28,7 @@ plot_conditional_distribution <- function(df,
 
 
   bs_median <- function(x, i) {
-    median(x[i])
+    stats::median(x[i])
   }
 
   bootstrap_median <- function(x) {
@@ -48,9 +48,9 @@ plot_conditional_distribution <- function(df,
       )
     } else {
       tidyr::tibble(
-        median = median(x),
-        ci_lower = median(x),
-        ci_upper = median(x)
+        median = stats::median(x),
+        ci_lower = stats::median(x),
+        ci_upper = stats::median(x)
       )
     }
   }
@@ -68,8 +68,8 @@ plot_conditional_distribution <- function(df,
       feature,
       value
     ) %>%
-    na.omit() %>%
-    dplyr::mutate(condition = case_when(
+    stats::na.omit() %>%
+    dplyr::mutate(condition = dplyr::case_when(
       condition == "Pos" ~ "Positive",
       condition == "Neg" ~ "Negative",
       TRUE ~ "Unknown"
@@ -99,7 +99,7 @@ plot_conditional_distribution <- function(df,
   effect_size_data <-
     long_data %>%
     dplyr::group_by(feature) %>%
-    nest() %>%
+    tidyr::nest() %>%
     dplyr::mutate(
       results = purrr::map(
         data,
@@ -110,7 +110,7 @@ plot_conditional_distribution <- function(df,
         )
       )
     ) %>%
-    unnest(results)
+    tidyr::unnest(results)
 
 
 
@@ -172,7 +172,7 @@ plot_conditional_distribution <- function(df,
     effect_size_data %>%
     tidyr::unnest(data) %>%
     dplyr::group_by(feature, r_rank_biserial, CI, CI_low, CI_high) %>%
-    dplyr::summarize(n = n(),
+    dplyr::summarize(n = dplyr::n(),
               .groups = "drop") %>%
     dplyr::mutate(r_rank_biserial = round(r_rank_biserial, 2),
            CI_low = round(CI_low, 2),
@@ -183,7 +183,7 @@ plot_conditional_distribution <- function(df,
   num_bins <-
     min(
       number_of_features,
-      diff(range(plot_data$value)) / (2 * IQR(plot_data$value) / length(plot_data$value)^(1 / 3))
+      diff(range(plot_data$value)) / (2 * stats::IQR(plot_data$value) / length(plot_data$value)^(1 / 3))
     )
 
 
@@ -383,7 +383,7 @@ plot_conditional_distribution <- function(df,
 #     feature,
 #     value
 #   ) %>%
-#   na.omit() %>%
+#   stats::na.omit() %>%
 #   dplyr::mutate(condition = case_when(
 #     condition == "Pos" ~ "Positive",
 #     condition == "Neg" ~ "Negative",
@@ -394,7 +394,7 @@ plot_conditional_distribution <- function(df,
 #
 # caption_data <-
 #
-#   n <- na.omit(nrow(q))
+#   n <- stats::na.omit(nrow(q))
 #
 # ggplot2::ggplot(long_data,
 #        ggplot2::aes(x = value,

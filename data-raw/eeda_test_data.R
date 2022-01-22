@@ -40,4 +40,4 @@ eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_character_na"] <- NA
 eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_long_character_na"] <- NA
 eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_date_na"] <- NA
 
-save(eeda_test_data, file = "data/eeda_test_data.RData")
+usethis::use_data(eeda_test_data, overwrite = TRUE)

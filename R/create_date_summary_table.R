@@ -43,12 +43,12 @@ create_date_summary_table <- function (x) {
   n_missing <- sum(is.na(dplyr::pull(x)))
   n_nonmissing <- sum(!is.na(dplyr::pull(x)))
   missing_ratio <- n_missing / n_x
-  x_w <- na.omit(dplyr::pull(x))
+  x_w <- stats::na.omit(dplyr::pull(x))
   unique_n <- length(unique(x_w))
   x_w_min <- min(x_w, na.rm = TRUE)
   x_w_max <- max(x_w, na.rm = TRUE)
   x_w_mean <- mean(x_w, na.rm = TRUE)
-  x_w_median <- mean(x_w, na.rm = TRUE)
+  x_w_median <- stats::median(x_w, na.rm = TRUE)
 
   if (is.null(getOption("date_summary_css_added")) == TRUE) {
     options("date_summary_css_added" = TRUE)

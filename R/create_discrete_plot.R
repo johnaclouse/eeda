@@ -6,9 +6,9 @@ create_discrete_plot <-
     # x = mpg["year"]
     # x[5:10,"year"]<-NA
     n <- dplyr::pull(x)
-    x_w <- na.omit(n)
+    x_w <- stats::na.omit(n)
     x_o <- grDevices::boxplot.stats(x_w)$out
-    x_wo <- na.omit(ifelse(x_w %in% x_o, NA, x_w))
+    x_wo <- stats::na.omit(ifelse(x_w %in% x_o, NA, x_w))
     x_name <- stringr::str_replace_all(names(x)[1], " ", "")
     names(x)[1] <- x_name
     x$type <- "Inlier"
@@ -37,7 +37,7 @@ create_discrete_plot <-
       ggplot2::scale_x_discrete(breaks = every_nth(n = label_interval)) +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.title = ggplot2::element_blank(),
-            legend.text=ggplot2::element_text(size=rel(1.2)))
+            legend.text=ggplot2::element_text(size = ggplot2::rel(1.2)))
 
     # plot_result <- ggplot2::ggplot() +
     #   ggplot2::geom_bar(

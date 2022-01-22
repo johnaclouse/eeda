@@ -34,7 +34,7 @@ create_numeric_summary_table <- function(x) {
   n_missing <- sum(is.na(dplyr::pull(x)))
   n_nonmissing <- sum(!is.na(dplyr::pull(x)))
   missing_ratio <- n_missing / n_x
-  x_w <- na.omit(dplyr::pull(x))
+  x_w <- stats::na.omit(dplyr::pull(x))
   unique_n <- length(unique(x_w))
   unique_ratio <- unique_n / length(x_w)
 
@@ -42,23 +42,23 @@ create_numeric_summary_table <- function(x) {
   o_n <- length(x_o)
   o_ratio <- o_n / n_nonmissing
   o_mean <- mean(x_o, na.rm = TRUE)
-  x_wo <- na.omit(ifelse(x_w %in% x_o, NA, x_w))
+  x_wo <- stats::na.omit(ifelse(x_w %in% x_o, NA, x_w))
 
   x_w_min <- min(x_w, na.rm = TRUE)
   x_w_max <- max(x_w, na.rm = TRUE)
   x_o_mean <- mean(x_o, na.rm = TRUE)
   x_w_mean <- mean(x_w, na.rm = TRUE)
-  x_w_sd <- sd(x_w, na.rm = TRUE)
+  x_w_sd <- stats::sd(x_w, na.rm = TRUE)
   x_w_cv <- x_w_mean / x_w_sd
   x_wo_mean <- mean(x_wo, na.rm = TRUE)
-  x_w_median <- median(x_w, na.rm = TRUE)
+  x_w_median <- stats::median(x_w, na.rm = TRUE)
   x_w_05 <- unname(stats::quantile(x_w, 0.05, na.rm = TRUE))
   x_w_95 <- unname(stats::quantile(x_w, 0.95, na.rm = TRUE))
-  x_w_IQR <- IQR(x_w)
+  x_w_IQR <- stats::IQR(x_w)
 
   x_o_floor <- grDevices::boxplot.stats(x_w)$stats[1]
   x_o_ceiling <- grDevices::boxplot.stats(x_w)$stats[5]
-  x_ordered <- sort(na.omit(dplyr::pull(x)))
+  x_ordered <- sort(stats::na.omit(dplyr::pull(x)))
   pctl <- rank(x_ordered) / length(x_ordered)
   outlier_floor_stats <- paste0(stringr::str_pad(
     as.character(round(pctl[max(which(x_ordered <= x_o_floor))] * 100,
@@ -76,21 +76,21 @@ create_numeric_summary_table <- function(x) {
 
   if (min(x, na.rm = TRUE) > 0 & nrow(x) > 100) {
     digit_trends_1 <-
-      benford(
+      benford.analysis::benford(
         dplyr::pull(x),
         number.of.digits = 1,
         discrete = T,
         sign = "positive"
       )
-    benford_chi_1 <- chisq(digit_trends_1)$p.value
+    benford_chi_1 <- benford.analysis::chisq(digit_trends_1)$p.value
     digit_trends_2 <-
-      benford(
+      benford.analysis::benford(
         dplyr::pull(x),
         number.of.digits = 1,
         discrete = T,
         sign = "positive"
       )
-    benford_chi_2 <- chisq(digit_trends_2)$p.value
+    benford_chi_2 <- benford.analysis::chisq(digit_trends_2)$p.value
 
     benford_p <-
       dplyr::if_else(benford_chi_1 < 0.05 | benford_chi_2 < 0.05,

@@ -9,11 +9,11 @@ create_date_plot <-
                             y = x_name),
                  color = palette_colors$graylagoon$bondi) +
       ggplot2::xlab("Index") +
-      theme_minimal() +
-      theme(axis.title.y = ggplot2::element_blank())
+      ggplot2::theme_minimal() +
+      ggplot2::theme(axis.title.y = ggplot2::element_blank())
 
     png_file <- tempfile(fileext = ".png")
-    fggplot2::ggsave(
+    ggplot2::ggsave(
       filename = png_file,
       dev = "png",
       plot = plot_result,

@@ -47,5 +47,5 @@ palette_colors[["graylagoon"]][["plum"]] <- "#A50064"
 palette_colors[["graylagoon"]][["tangerine"]] <- "#FFCD00"
 palette_colors[["graylagoon"]][["gray"]] <- "#767171"
 
-pie(rep(1,5), col = unlist(palette_colors[["graylagoon"]]))
+# pie(rep(1,5), col = unlist(palette_colors[["graylagoon"]]))
 rm(color_pal)
