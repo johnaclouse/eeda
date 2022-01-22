@@ -12,7 +12,7 @@ color_pal <- c(
   "darkred",
   "darkslateblue",
   "#4DAF4A", # green
-  "darkslategray", 
+  "darkslategray",
   "#b8a787", # wheat
   "cyan",
   "#FFFF33", # yellow
@@ -30,7 +30,7 @@ color_pal <- c(
 # pie(rep(1, length(color_pal)), col = color_pal)
 
 palette_colors <- list()
-palette_colors <- map(seq_along(color_pal),
+palette_colors <- purrr::map(seq_along(color_pal),
                       ~color_pal[1:.])
 
 # display list of colors

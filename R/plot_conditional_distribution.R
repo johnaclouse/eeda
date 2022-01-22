@@ -25,64 +25,64 @@ plot_conditional_distribution <- function(df,
       "Positive" = "red",
       "Positive no significant difference" = "#FFC0C0"
     )
-  
-  
+
+
   bs_median <- function(x, i) {
     median(x[i])
   }
-  
+
   bootstrap_median <- function(x) {
     x <- x[!is.na(x)]
     bs <- boot::boot(x,
                      bs_median,
                      R = 1000
     )
-    
+
     bs_ci <- boot::boot.ci(bs, type = "perc")
-    
+
     if (!is.null(bs_ci)) {
-      tibble(
+      tidyr::tibble(
         median = bs_ci$t0,
         ci_lower = bs_ci$percent[4],
         ci_upper = bs_ci$percent[5]
       )
     } else {
-      tibble(
+      tidyr::tibble(
         median = median(x),
         ci_lower = median(x),
         ci_upper = median(x)
       )
     }
   }
-  
-  
+
+
   long_data <-
     df %>%
-    pivot_longer(
+    tidyr::pivot_longer(
       values_to = "value",
       names_to = "feature",
       cols = -all_of(condition)
     ) %>%
-    select(
+    dplyr::select(
       condition = all_of(condition),
       feature,
       value
     ) %>%
     na.omit() %>%
-    mutate(condition = case_when(
+    dplyr::mutate(condition = case_when(
       condition == "Pos" ~ "Positive",
       condition == "Neg" ~ "Negative",
       TRUE ~ "Unknown"
     ))
-  
-  
-  
+
+
+
   # stats ----
   # wilcox_data <-
   #   long_data %>%
   #   group_by(feature) %>%
   #   nest() %>%
-  #   mutate(
+  #   dplyr::mutate(
   #     results = map(
   #       data,
   #       ~ rstatix::wilcox_effsize(
@@ -95,13 +95,13 @@ plot_conditional_distribution <- function(df,
   #       ~ wilcox.test(data = ., value ~ condition)$p.value
   #     )
   #   )
-  
+
   effect_size_data <-
     long_data %>%
-    group_by(feature) %>%
+    dplyr::group_by(feature) %>%
     nest() %>%
-    mutate(
-      results = map(
+    dplyr::mutate(
+      results = purrr::map(
         data,
         ~ effectsize::rank_biserial(
           data = .,
@@ -111,20 +111,20 @@ plot_conditional_distribution <- function(df,
       )
     ) %>%
     unnest(results)
-  
-  
-  
+
+
+
   median_data <-
     long_data %>%
-    group_by(feature, condition) %>%
-    nest() %>%
-    mutate(
+    dplyr::group_by(feature, condition) %>%
+    tidyr::nest() %>%
+    dplyr::mutate(
       n = map_dbl(data, nrow),
-      bootstrap = map(
+      bootstrap = purrr::map(
         .x = data,
         ~ bootstrap_median(.x$value)
       ),
-      densities = map(
+      densities = purrr::map(
         .x = data,
         ~ hist(.x$value,
                breaks = 30,
@@ -132,25 +132,25 @@ plot_conditional_distribution <- function(df,
         )
       )
     ) %>%
-    unnest(bootstrap) %>%
-    # mutate(max_density = map_dbl(
+    tidyr::unnest(bootstrap) %>%
+    # dplyr::mutate(max_density = map_dbl(
     #   .data$densities, density_max))
-    # select(-data)
-    mutate(max_density = map_dbl(
+    # dplyr::select(-data)
+    dplyr::mutate(max_density = purrr::map_dbl(
       .data$densities, ~ max(.$density)
     )) %>%
-    select(
+    dplyr::select(
       -data,
       -densities
     ) %>%
-    ungroup()
-  
-  
+    dplyr::ungroup()
+
+
   plot_data <-
     effect_size_data %>%
-    unnest(data) %>%
-    rowwise() %>% 
-    mutate(Conditional_Value = factor(if_else(
+    tidyr::unnest(data) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(Conditional_Value = factor(if_else(
       condition == "Positive",
       if_else(between(0, CI_low, CI_high) == TRUE, "Positive no significant difference", "Positive"),
       if_else(
@@ -159,41 +159,41 @@ plot_conditional_distribution <- function(df,
         "Error"
       )
     )))
-  
-  
-  outlier_data <- long_data %>% 
-    group_by(feature, condition) %>% 
-    summarize(outliers = list(boxplot.stats(value)$out),
-              .groups = "drop") %>% 
-    unnest(outliers)
-  
-  
+
+
+  outlier_data <- long_data %>%
+    dplyr::group_by(feature, condition) %>%
+    dplyr::summarize(outliers = list(boxplot.stats(value)$out),
+              .groups = "drop") %>%
+    tidyr::unnest(outliers)
+
+
   caption_data <-
     effect_size_data %>%
-    unnest(data) %>%
-    group_by(feature, r_rank_biserial, CI, CI_low, CI_high) %>%
-    summarize(n = n(),
-              .groups = "drop") %>% 
-    mutate(r_rank_biserial = round(r_rank_biserial, 2),
+    tidyr::unnest(data) %>%
+    dplyr::group_by(feature, r_rank_biserial, CI, CI_low, CI_high) %>%
+    dplyr::summarize(n = n(),
+              .groups = "drop") %>%
+    dplyr::mutate(r_rank_biserial = round(r_rank_biserial, 2),
            CI_low = round(CI_low, 2),
            CI_high = round(CI_high, 2),
     )
-  
+
   number_of_features <- length(unique(plot_data$value))
   num_bins <-
     min(
       number_of_features,
       diff(range(plot_data$value)) / (2 * IQR(plot_data$value) / length(plot_data$value)^(1 / 3))
     )
-  
-  
-  
-  
-  
+
+
+
+
+
   ggplot() +
-    
-    
-    
+
+
+
     # histogram ----
   geom_histogram(
     data = plot_data,
@@ -225,25 +225,25 @@ plot_conditional_distribution <- function(df,
       color = "blue",
       size = 0.75
     ) +
-    
-    
+
+
     {
       if (nrow(outlier_data) > 0) {
         geom_point(
           data = outlier_data,
           aes(x = outliers,
-              y = 0, 
+              y = 0,
               group = condition),
           color = "blue",
           shape = 21,
           size = 2,
-          
+
         )
-        
+
       }
-      
+
     } +
-    
+
     # geom_boxplot(
     #   data = plot_data,
     #   aes(
@@ -258,7 +258,7 @@ plot_conditional_distribution <- function(df,
   #   # color = NA,
   #   notch = TRUE
   # ) +
-  
+
   # labels ----
   geom_text(
     # data = plot_data %>% distinct(condition, feature, p_value, effsize),
@@ -316,128 +316,128 @@ plot_conditional_distribution <- function(df,
 
 
 
-df <-
-  data$engineered %>%
-  select(
-    data$target$name,
-    LN_SDOH_AddrStability,
-    LN_SDOH_WealthIndex,
-    LN_SDOH_ProspectBankingExperience,
-    LN_SDOH_EducationProgram4Yr,
-    LN_SDOH_Motivation_Level,
-    LN_SDOH_Medication_Adherence_Rate,
-    LN_SDOH_Readmission_Probability,
-    LN_SDOH_Socio_Index,
-    LN_SDOH_Socio_Rank,
-    any_of(data$key_measures),
-  ) %>% 
-  mutate(Sex = if_else(Sex == "M", 1, 0))
+# df <-
+#   data$engineered %>%
+#   dplyr::select(
+#     data$target$name,
+#     LN_SDOH_AddrStability,
+#     LN_SDOH_WealthIndex,
+#     LN_SDOH_ProspectBankingExperience,
+#     LN_SDOH_EducationProgram4Yr,
+#     LN_SDOH_Motivation_Level,
+#     LN_SDOH_Medication_Adherence_Rate,
+#     LN_SDOH_Readmission_Probability,
+#     LN_SDOH_Socio_Index,
+#     LN_SDOH_Socio_Rank,
+#     any_of(data$key_measures),
+#   ) %>%
+#   dplyr::mutate(Sex = if_else(Sex == "M", 1, 0))
 
 # plot_conditional_distribution(
 #   df = df,
 #   condition = data$target$name)
-# 
+#
 
 
-plot_conditional_distribution(df = df[c(data$target$name, names(df)[10])], condition = data$target$name)
+# plot_conditional_distribution(df = df[c(data$target$name, names(df)[10])], condition = data$target$name)
 
 
 
 
 
-q <-
-  data$engineered %>%
-  select(
-    data$target$name,
-    # LN_SDOH_AddrStability,
-    LN_SDOH_WealthIndex
-    # LN_SDOH_ProspectBankingExperience,
-    # LN_SDOH_EducationProgram4Yr,
-    # Chronic_Condition_Cnt,
-    # ED_Visits_L12M,
-    # Admits_L12M,
-    # Readmits_L12M,
-    # Sex
-  ) %>% 
-  mutate(across(where(is.numeric), factor))
-
-names(q)[-1] %>%
-  walk(~ hist(q[[.x]], main  = .x))
-names(q)[-1] %>%
-  map(~ length(unique(q[[.x]])))
-names(q) %>%
-  map(~ levels(q[[.x]]))
-
-
-condition <- data$target$name
-
-long_data <-
-  q %>%
-  pivot_longer(
-    values_to = "value",
-    names_to = "feature",
-    cols = -all_of(condition)
-  ) %>%
-  select(
-    condition = all_of(condition),
-    feature,
-    value
-  ) %>%
-  na.omit() %>%
-  mutate(condition = case_when(
-    condition == "Pos" ~ "Positive",
-    condition == "Neg" ~ "Negative",
-    TRUE ~ "Unknown"
-  ))
-
-chi_square <- chisq.test(table(q[[2]], if_else(q[1] == "Pos", 1, 0)))
-
-caption_data <-
-  
-  n <- na.omit(nrow(q))  
-
-ggplot(long_data,
-       aes(x = value,
-           fill = condition),
-) +
-  geom_bar(alpha = if_else(chi_square$p.value < alpha, 1, 0.3)) + 
-  # facet_wrap(~ feature,
-  #            scales = "free") +
-  
-  facet_grid(condition ~ feature,
-             scales = "free") +
-  scale_y_continuous(labels = scales::comma) +
-  
-  labs(
-    caption = glue::glue("n = {scales::comma(n)}   \\
-                           chi-square p-value = {curios::roundx_n(chi_square$p.value)}"),
-    x = NULL,
-    y = NULL,
-  ) + 
-  theme_minimal()
-
-
-feature_by_target <- dlookr::target_by(q, data$target$name)
-
-# also works with numerical features
-
-# ADD THIS TO THE BIVARIATE VIEW
-
-# variable US        n    na  mean    sd se_mean   IQR skewness
-# <chr>    <fct> <int> <int> <dbl> <dbl>   <dbl> <dbl>    <dbl>
-#   1 Sales    No      142     0  6.82  2.60   0.218  3.44   0.323 
-# 2 Sales    Yes     258     0  7.87  2.88   0.179  4.23   0.0760
-# 3 Sales    total   400     0  7.50  2.82   0.141  3.93   0.186 
-dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex")
-
-library(dlookr)
-summary(dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex"))
-plot(dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex"), typographic = T)
-plot(dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex"), typographic = T) +
-  # ggtitle("Foo") + 
-  labs(caption = "My p-value",
-       ) +
-  theme(axis.title.x = element_text(hjust = 0.5),
-        axis.title.y = element_text(hjust = 0.5)) + 
-  scale_fill_manual(values = c("red", "green", "blue"))
-
+# q <-
+#   data$engineered %>%
+#   dplyr::select(
+#     data$target$name,
+#     # LN_SDOH_AddrStability,
+#     LN_SDOH_WealthIndex
+#     # LN_SDOH_ProspectBankingExperience,
+#     # LN_SDOH_EducationProgram4Yr,
+#     # Chronic_Condition_Cnt,
+#     # ED_Visits_L12M,
+#     # Admits_L12M,
+#     # Readmits_L12M,
+#     # Sex
+#   ) %>%
+#   dplyr::mutate(across(where(is.numeric), factor))
+#
+# names(q)[-1] %>%
+#   walk(~ hist(q[[.x]], main  = .x))
+# names(q)[-1] %>%
+#   purrr::map(~ length(unique(q[[.x]])))
+# names(q) %>%
+#   purrr::map(~ levels(q[[.x]]))
+#
+#
+# condition <- data$target$name
+#
+# long_data <-
+#   q %>%
+#   tidyr::pivot_longer(
+#     values_to = "value",
+#     names_to = "feature",
+#     cols = -all_of(condition)
+#   ) %>%
+#   dplyr::select(
+#     condition = all_of(condition),
+#     feature,
+#     value
+#   ) %>%
+#   na.omit() %>%
+#   dplyr::mutate(condition = case_when(
+#     condition == "Pos" ~ "Positive",
+#     condition == "Neg" ~ "Negative",
+#     TRUE ~ "Unknown"
+#   ))
+#
+# chi_square <- chisq.test(table(q[[2]], if_else(q[1] == "Pos", 1, 0)))
+#
+# caption_data <-
+#
+#   n <- na.omit(nrow(q))
+#
+# ggplot(long_data,
+#        aes(x = value,
+#            fill = condition),
+# ) +
+#   geom_bar(alpha = if_else(chi_square$p.value < alpha, 1, 0.3)) +
+#   # facet_wrap(~ feature,
+#   #            scales = "free") +
+#
+#   facet_grid(condition ~ feature,
+#              scales = "free") +
+#   scale_y_continuous(labels = scales::comma) +
+#
+#   labs(
+#     caption = glue::glue("n = {scales::comma(n)}   \\
+#                            chi-square p-value = {curios::roundx_n(chi_square$p.value)}"),
+#     x = NULL,
+#     y = NULL,
+#   ) +
+#   theme_minimal()
+#
+#
+# feature_by_target <- dlookr::target_by(q, data$target$name)
+#
+# # also works with numerical features
+#
+# # ADD THIS TO THE BIVARIATE VIEW
+#
+# # variable US        n    na  mean    sd se_mean   IQR skewness
+# # <chr>    <fct> <int> <int> <dbl> <dbl>   <dbl> <dbl>    <dbl>
+# #   1 Sales    No      142     0  6.82  2.60   0.218  3.44   0.323
+# # 2 Sales    Yes     258     0  7.87  2.88   0.179  4.23   0.0760
+# # 3 Sales    total   400     0  7.50  2.82   0.141  3.93   0.186
+# dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex")
+#
+# library(dlookr)
+# summary(dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex"))
+# plot(dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex"), typographic = T)
+# plot(dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex"), typographic = T) +
+#   # ggtitle("Foo") +
+#   labs(caption = "My p-value",
+#        ) +
+#   theme(axis.title.x = element_text(hjust = 0.5),
+#         axis.title.y = element_text(hjust = 0.5)) +
+#   scale_fill_manual(values = c("red", "green", "blue"))
+#

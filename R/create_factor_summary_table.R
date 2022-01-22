@@ -23,7 +23,7 @@ factor_css <- "
   "
 
 create_factor_summary_table <- function (x) {
-  x_table <- as_tibble(table(x))
+  x_table <- tidyr::as_tibble(table(x))
   x_table$x <- fct_reorder(x_table$x, x_table$n, .desc = T)
   x_table <- arrange(x_table, desc(n))
   n_xzv <-
@@ -40,7 +40,7 @@ create_factor_summary_table <- function (x) {
   missing_ratio <- n_missing / n_x
   x_w <- na.omit(pull(x))
   unique_n <- length(unique(x_w))
-  
+
   style <- "'
     /* table{border-collapse: separate;} */
     .factor-summary-table table {border-collapse: separate;}
@@ -69,8 +69,8 @@ create_factor_summary_table <- function (x) {
     text-align:right;
     color:blue;
     }'"
-  
-  
+
+
   cat(
     glue(
       "<BR>",

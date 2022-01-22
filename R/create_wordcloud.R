@@ -4,17 +4,17 @@ create_wordcloud <-
            width = 1294 / 72,
            height = 800 / 72,
            dpi = 72) {
-    
-    
+
+
     # word cloud gets stuck when there are only unique values
     if (sum(duplicated(x)) > 1) {
-      
-      top_words <- as_tibble(table(x)) %>% 
-        filter(x != "") %>% 
-        mutate(x = stringr::str_trunc(x, 30)) %>% 
-        arrange(desc(n)) %>% 
-        slice(1:word_count)
-      
+
+      top_words <- tidyr::as_tibble(table(x)) %>%
+        dplyr::filter(x != "") %>%
+        dplyr::mutate(x = stringr::str_trunc(x, 30)) %>%
+        dplyr::arrange(desc(n)) %>%
+        dplyr::slice(1:word_count)
+
       word_cloud <-
         ggplot(top_words) +
         ggwordcloud::geom_text_wordcloud(
@@ -31,8 +31,8 @@ create_wordcloud <-
         # scale_radius(range = c(2, 18), limits = c(0, NA)) +
         scale_size_area(max_size = 14) +
         scale_color_viridis_d(option = "H", direction = -1) +
-        theme_minimal() 
-      
+        theme_minimal()
+
       png_file <- tempfile(fileext = ".png")
       ggsave(
         filename = png_file,
@@ -43,7 +43,7 @@ create_wordcloud <-
         dpi = dpi
       )
       # crop ggplot2 image saved as png
-      knitr::plot_crop(png_file) 
+      knitr::plot_crop(png_file)
     } else {
       png_file <- ""
     }

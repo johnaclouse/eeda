@@ -1,5 +1,5 @@
 set.seed(47)
-eeda_test_data <- tibble(
+eeda_test_data <- tidyr::tibble(
   eg_factor_4 = factor(sample(c("Dragon", "Fish", "Raccoon", "Dog"), 2000, replace = TRUE)),
   eg_factor_4_na = eg_factor_4,
   eg_factor_12 = factor(sample(colors(), 2000, replace = TRUE)),
@@ -20,8 +20,10 @@ eeda_test_data <- tibble(
     replace = TRUE
   ),
   eg_character_na = eg_character,
-  eg_long_character = map_chr(1:2000, 
-                            ~ paste(str_split(stringi::stri_rand_lipsum(1, FALSE), " ")[[1]][1:4], collapse = " ")),
+  eg_long_character = purrr::map_chr(
+    1:2000,
+    ~ paste(stringr::str_split(stringi::stri_rand_lipsum(1, FALSE), " ")[[1]][1:4], collapse = " ")
+  ),
   eg_long_character_na = eg_long_character,
   eg_date = Sys.Date() - rpois(n = 2000, lambda = 1) * 100,
   eg_date_na = eg_date

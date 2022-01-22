@@ -1,19 +1,19 @@
-source("R/is_discrete.R")
-source("R/create_color_palettes.R")
-source(here::here("R", "create_numeric_summary_table.R"))
-source(here::here("R", "create_numeric_scatter_plot.R"))
-source(here::here("R", "create_numeric_distribution_plot.R"))
-source(here::here("R", "create_benford_plot.R"))
-
-source(here::here("R", "create_discrete_summary_table.R"))
-source(here::here("R", "create_discrete_plot.R"))
-
-source(here::here("R", "create_date_summary_table.R"))
-source(here::here("R", "create_date_plot.R"))
-
-source(here::here("R", "create_factor_summary_table.R"))
-source(here::here("R", "create_wordcloud.R"))
-source(here::here("R", "create_freq_table.R"))
+# source("R/is_discrete.R")
+# source("R/create_color_palettes.R")
+# source(here::here("R", "create_numeric_summary_table.R"))
+# source(here::here("R", "create_numeric_scatter_plot.R"))
+# source(here::here("R", "create_numeric_distribution_plot.R"))
+# source(here::here("R", "create_benford_plot.R"))
+#
+# source(here::here("R", "create_discrete_summary_table.R"))
+# source(here::here("R", "create_discrete_plot.R"))
+#
+# source(here::here("R", "create_date_summary_table.R"))
+# source(here::here("R", "create_date_plot.R"))
+#
+# source(here::here("R", "create_factor_summary_table.R"))
+# source(here::here("R", "create_wordcloud.R"))
+# source(here::here("R", "create_freq_table.R"))
 
 
 render_character <- function(x) {
@@ -21,7 +21,7 @@ render_character <- function(x) {
       names(x) == "Member_Id_Universal") {
     cat("<td> Unique identifier </td>\n")
   } else {
-    if (str_detect(names(x), "_Id")) {
+    if (stringr::str_detect(names(x), "_Id")) {
       create_eda_row_header(x, height = 100)
       cat("<td> Identifier </td>\n")
     } else {
@@ -35,7 +35,7 @@ render_character <- function(x) {
 
 
 render_factor <- function(x) {
-  if (str_detect(names(x), "_Id")) {
+  if (stringr::str_detect(names(x), "_Id")) {
     cat("<td> Identifier </td>\n")
   } else {
     cat("<td style='vertical-align:top; width:475px;'>\n")
@@ -65,7 +65,7 @@ render_date <- function(x) {
   cat("<td style='padding-right: 1.5em; width:500px; vertical-align:text-top;'>\n")
   cat(create_date_summary_table(x))
   cat("</td>\n")
-  
+
   cat("<td style='vertical-align:top;'>\n")
   cat("<img src='", create_date_plot(x), "'>", sep = "")
   cat("</td>\n")
@@ -76,15 +76,15 @@ render_numeric <- function(x) {
   cat("<td style='vertical-align: text-top; width:375px'>\n")
   cat(create_numeric_summary_table(x))
   cat("</td>\n")
-  
+
   cat("<td style='padding-left: 1em; width:475px; vertical-align:top;'>\n")
   cat("<img src='", create_numeric_scatter_plot(x), "'>", sep = "")
   cat("</td>\n")
-  
+
   cat("<td style='padding-left: 1em; width:450px; vertical-align:top;'>\n")
   cat("<img src='", create_numeric_distribution_plot(x), "'>", sep = "")
   cat("</td>\n")
-  
+
   cat("<td style='padding-left: 1em; width:300px; vertical-align:top;'>\n")
   cat(create_benford_plot(x))
   cat("</td>\n")
@@ -96,13 +96,13 @@ render_discrete <- function(x) {
   cat("<td style='vertical-align: text-top; width:375px'>\n")
   cat(create_discrete_summary_table(x))
   cat("</td>\n")
-  
+
   cat("<td style='padding-left: 1em; width:700px; vertical-align:top;'>\n")
   cat("<img src='", create_discrete_plot(x), "'>",
       sep = ""
   )
   cat("</td>\n")
-  
+
   cat("<td style='padding-left: 5em; width:325px; vertical-align:top;'>\n")
   cat(unlist(create_freq_table(x)))
   cat("</td>\n")
@@ -135,7 +135,7 @@ conglomerate_eda <- function(x,
         render_numeric(x)
       }
     }
-    
+
     cat("</tr>\n</table>\n")
   }
 }
