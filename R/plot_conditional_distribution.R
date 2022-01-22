@@ -18,6 +18,10 @@ plot_conditional_distribution <- function(df,
                                           condition = NULL,
                                           alpha = 0.01,
                                           conf_level = 0.95) {
+  # binding variable just to keep R CMD Check from seeing NSE as global variables
+  feature <- value <- data <- results <- bootstrap <- .data <- densities <- NULL
+  CI_low <- CI_high <- outliers <- r_rank_biserial <- CI <- CI_Upper <- CI_Lower <- NULL
+  n <- Conditional_Value <- BS_Median <- NULL
   colors <-
     c(
       "Negative" = "black",
@@ -42,15 +46,15 @@ plot_conditional_distribution <- function(df,
 
     if (!is.null(bs_ci)) {
       tidyr::tibble(
-        median = bs_ci$t0,
-        ci_lower = bs_ci$percent[4],
-        ci_upper = bs_ci$percent[5]
+        BS_Median = bs_ci$t0,
+        CI_Lower = bs_ci$percent[4],
+        CI_Upper = bs_ci$percent[5]
       )
     } else {
       tidyr::tibble(
-        median = stats::median(x),
-        ci_lower = stats::median(x),
-        ci_upper = stats::median(x)
+        BS_Median = stats::median(x),
+        CI_Lower = stats::median(x),
+        CI_Upper = stats::median(x)
       )
     }
   }
@@ -61,10 +65,10 @@ plot_conditional_distribution <- function(df,
     tidyr::pivot_longer(
       values_to = "value",
       names_to = "feature",
-      cols = -all_of(condition)
+      cols = -tidyselect::all_of(condition)
     ) %>%
     dplyr::select(
-      condition = all_of(condition),
+      condition = tidyselect::all_of(condition),
       feature,
       value
     ) %>%
@@ -119,7 +123,7 @@ plot_conditional_distribution <- function(df,
     dplyr::group_by(feature, condition) %>%
     tidyr::nest() %>%
     dplyr::mutate(
-      n = map_dbl(data, nrow),
+      n = purrr::map_dbl(data, nrow),
       bootstrap = purrr::map(
         .x = data,
         ~ bootstrap_median(.x$value)
@@ -152,10 +156,10 @@ plot_conditional_distribution <- function(df,
     dplyr::rowwise() %>%
     dplyr::mutate(Conditional_Value = factor(dplyr::if_else(
       condition == "Positive",
-      dplyr::if_else(between(0, CI_low, CI_high) == TRUE, "Positive no significant difference", "Positive"),
+      dplyr::if_else(dplyr::between(0, CI_low, CI_high) == TRUE, "Positive no significant difference", "Positive"),
       dplyr::if_else(
         condition == "Negative",
-        dplyr::if_else(between(0, CI_low, CI_high) == TRUE, "Negative no significant difference", "Negative"),
+        dplyr::if_else(dplyr::between(0, CI_low, CI_high) == TRUE, "Negative no significant difference", "Negative"),
         "Error"
       )
     )))
@@ -209,8 +213,8 @@ plot_conditional_distribution <- function(df,
     ggplot2::geom_rect(
       data = median_data,
       ggplot2::aes(
-        xmin = ci_lower,
-        xmax = ci_upper
+        xmin = CI_Lower,
+        xmax = CI_Upper
       ),
       fill = "blue",
       ymin = -Inf,
@@ -220,7 +224,7 @@ plot_conditional_distribution <- function(df,
     ggplot2::geom_vline(
       data = median_data,
       ggplot2::aes(
-        xintercept = median
+        xintercept = BS_Median
       ),
       color = "blue",
       size = 0.75
@@ -273,14 +277,14 @@ plot_conditional_distribution <- function(df,
     hjust = 1,
     inherit.aes = FALSE
   ) +
-    facet_wrap(
+    ggplot2::facet_wrap(
       . ~ condition,
       ncol = 1,
-      labeller = labeller(feature = split_label),
+      labeller = ggplot2::labeller(feature = split_label),
       scales = "free_y"
     ) +
     # ggplot2::scale_x_continuous(trans = "pseudo_log", labels = scales::comma_format()) +
-    ggplot2::scale_x_continuous(trans = sqrt_trans(), labels = scales::comma_format()) +
+    ggplot2::scale_x_continuous(trans = scales::sqrt_trans(), labels = scales::comma_format()) +
     # ggplot2::scale_x_continuous(trans = "log1p", labels = scales::comma_format()) +
     # ggplot2::scale_x_continuous(labels = scales::comma_format()) +
     ggplot2::scale_color_manual(values = colors) +
@@ -296,7 +300,7 @@ plot_conditional_distribution <- function(df,
       x = NULL,
       y = "Count",
     ) +
-    guides(fill = guide_legend(
+    ggplot2::guides(fill = ggplot2::guide_legend(
       title = "Condition",
       nrow = 1
     )) +
@@ -376,10 +380,10 @@ plot_conditional_distribution <- function(df,
 #   tidyr::pivot_longer(
 #     values_to = "value",
 #     names_to = "feature",
-#     cols = -all_of(condition)
+#     cols = -tidyselect::all_of(condition)
 #   ) %>%
 #   dplyr::select(
-#     condition = all_of(condition),
+#     condition = tidyselect::all_of(condition),
 #     feature,
 #     value
 #   ) %>%

@@ -28,7 +28,8 @@ Imports:
     scales,
     stats,
     stringr,
-    tidyr
+    tidyr,
+    tidyselect
 URL: https://github.com/johnaclouse/eeda
 BugReports: https://github.com/johnaclouse/eeda/issues
 Depends: 

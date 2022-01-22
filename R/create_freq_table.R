@@ -1,5 +1,8 @@
 create_freq_table <- function(x,
                               max_lines = 1000) {
+  # binding variable just to keep R CMD Check from seeing NSE as global variables
+  n <- NULL
+
   # forcats::fct_infreq(x[[1]]) %>%
   #   table()  %>%
   #   as_tibble() %>%
@@ -38,7 +41,7 @@ create_freq_table <- function(x,
 
   x_name <- names(x)
   html_table <- stats::na.omit(x) %>%
-    dplyr::group_by(dplyr::across(all_of(x_name))) %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(x_name))) %>%
     dplyr::summarize(n = dplyr::n()) %>%
     dplyr::mutate(Proportion = round(n / sum(n), 2)) %>%
     dplyr::arrange(dplyr::desc(n)) %>%

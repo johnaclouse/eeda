@@ -11,7 +11,7 @@ create_numeric_distribution_plot <-
     x_o_floor <- grDevices::boxplot.stats(x_w)$stats[1]
     x_o_ceiling <- grDevices::boxplot.stats(x_w)$stats[5]
     x_w_05 <- unname(stats::quantile(x_w, 0.05, na.rm = TRUE))
-    x_w_median <- mean(x_w, na.rm = TRUE)
+    x_w_median <- stats::median(x_w, na.rm = TRUE)
     x_w_95 <- unname(stats::quantile(x_w, 0.95, na.rm = TRUE))
     hist_w <- ggplot2::ggplot() +
       ggplot2::aes(x = x_w) +
@@ -19,7 +19,7 @@ create_numeric_distribution_plot <-
       ggplot2::theme_minimal() +
       ggplot2::theme(axis.title.x = ggplot2::element_blank(),
             axis.title.y = ggplot2::element_blank())
-    
+
     box_w <- ggplot2::ggplot() +
       ggplot2::geom_boxplot(
         ggplot2::aes(x = x_w),
@@ -34,7 +34,7 @@ create_numeric_distribution_plot <-
       ggplot2::theme_minimal() +
       ggplot2::theme(axis.title.x = ggplot2::element_blank(),
             axis.title.y = ggplot2::element_blank())
-    
+
     box_wo <- ggplot2::ggplot() +
       ggplot2::geom_boxplot(
         ggplot2::aes(x = x_wo),
@@ -46,14 +46,14 @@ create_numeric_distribution_plot <-
       ggplot2::theme_minimal() +
       ggplot2::theme(axis.title.x = ggplot2::element_blank(),
             axis.title.y = ggplot2::element_blank())
-    
+
     hist_w <- ggplot2::ggplot() +
       ggplot2::aes(x = x_w) +
       ggplot2::geom_density(fill = palette_colors$graylagoon$lagoon) +
       ggplot2::theme_minimal() +
       ggplot2::theme(axis.title.x = ggplot2::element_blank(),
             axis.title.y = ggplot2::element_blank())
-    
+
     hist_wo <- ggplot2::ggplot() +
       ggplot2::aes(x = x_wo) +
       ggplot2::geom_density(fill = palette_colors$graylagoon$bondi,
@@ -61,9 +61,9 @@ create_numeric_distribution_plot <-
       ggplot2::theme_minimal() +
       ggplot2::theme(axis.title.x = ggplot2::element_blank(),
             axis.title.y = ggplot2::element_blank())
-    
+
     plot_result <- (box_w / hist_w) | (box_wo / hist_wo)
-    
+
     png_file <- tempfile(fileext = ".png")
     ggplot2::ggsave(
       filename = png_file,

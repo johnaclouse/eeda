@@ -5,6 +5,8 @@ create_wordcloud <-
            height = 800 / 72,
            dpi = 72) {
 
+    # binding variable just to keep R CMD Check from seeing NSE as global variables
+    n <- NULL
 
     # word cloud gets stuck when there are only unique values
     if (sum(duplicated(x)) > 1) {
