@@ -17,13 +17,13 @@
 
 
 render_character <- function(x) {
+  x_name <- names(x)
   if (length(unique(x[[1]])) == length(x[[1]]) |
       names(x) == "Member_Id_Universal") {
     cat("<td> Unique identifier </td>\n")
   } else {
     if (stringr::str_detect(names(x), "_Id")) {
-      create_eda_row_header(x, height = 100)
-      cat("<td> Identifier </td>\n")
+      cat("<td> Non-unique Identifier </td>\n")
     } else {
       if (length(unique(x[[1]])) != length(x[[1]])) {
         x[[1]] <- factor(x[[1]])
@@ -109,17 +109,13 @@ render_discrete <- function(x) {
 }
 
 conglomerate_eda <- function(x,
-                             print_header = TRUE,
                              include_univariate = TRUE,
                              bivariate_categorical_target = NULL,
                              bivariate_continuous_target = NULL) {
   x_name <- names(x)
   message("Conglomerating EDA for:", x_name)
 
-  # print_header ----
-  if (print_header) {
     cat("\n\n###", x_name, "\n\n")
-  }
 
   # univariate table
   if (include_univariate) {
