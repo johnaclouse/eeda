@@ -1,6 +1,3 @@
-library(benford.analysis)
-library(glue)
-
 # x = mpg["model"]
 # x = mpg["hwy"]
 # x = df["CDR_Hypertension"]
@@ -27,21 +24,21 @@ numeric_css <- "
 
 create_numeric_summary_table <- function(x) {
   n_xzv <-
-    if_else(
+    dplyr::if_else(
       caret::nearZeroVar(x, saveMetrics = TRUE)$nzv,
       # "<span style='background-color:rgba(255,0,0,0.5)'>Near-zero variance</span>",
       "<mark>Near-zero variance</mark>",
       ""
     )
-  n_x <- length(pull(x))
-  n_missing <- sum(is.na(pull(x)))
-  n_nonmissing <- sum(!is.na(pull(x)))
+  n_x <- length(dplyr::pull(x))
+  n_missing <- sum(is.na(dplyr::pull(x)))
+  n_nonmissing <- sum(!is.na(dplyr::pull(x)))
   missing_ratio <- n_missing / n_x
-  x_w <- na.omit(pull(x))
+  x_w <- na.omit(dplyr::pull(x))
   unique_n <- length(unique(x_w))
   unique_ratio <- unique_n / length(x_w)
 
-  x_o <- boxplot.stats(x_w)$out
+  x_o <- grDevices::boxplot.stats(x_w)$out
   o_n <- length(x_o)
   o_ratio <- o_n / n_nonmissing
   o_mean <- mean(x_o, na.rm = TRUE)
@@ -55,15 +52,15 @@ create_numeric_summary_table <- function(x) {
   x_w_cv <- x_w_mean / x_w_sd
   x_wo_mean <- mean(x_wo, na.rm = TRUE)
   x_w_median <- median(x_w, na.rm = TRUE)
-  x_w_05 <- unname(quantile(x_w, 0.05, na.rm = TRUE))
-  x_w_95 <- unname(quantile(x_w, 0.95, na.rm = TRUE))
+  x_w_05 <- unname(stats::quantile(x_w, 0.05, na.rm = TRUE))
+  x_w_95 <- unname(stats::quantile(x_w, 0.95, na.rm = TRUE))
   x_w_IQR <- IQR(x_w)
 
-  x_o_floor <- boxplot.stats(x_w)$stats[1]
-  x_o_ceiling <- boxplot.stats(x_w)$stats[5]
-  x_ordered <- sort(na.omit(pull(x)))
+  x_o_floor <- grDevices::boxplot.stats(x_w)$stats[1]
+  x_o_ceiling <- grDevices::boxplot.stats(x_w)$stats[5]
+  x_ordered <- sort(na.omit(dplyr::pull(x)))
   pctl <- rank(x_ordered) / length(x_ordered)
-  outlier_floor_quantile <- paste0(stringr::str_pad(
+  outlier_floor_stats <- paste0(stringr::str_pad(
     as.character(round(pctl[max(which(x_ordered <= x_o_floor))] * 100,
                        0)),
     width = 2,
@@ -72,7 +69,7 @@ create_numeric_summary_table <- function(x) {
   ),
   "%") %>%
     stringr::str_replace("p", "&numsp;")
-  outlier_ceiling_quantile <-
+  outlier_ceiling_stats <-
     paste0(round(pctl[min(which(x_ordered >= x_o_ceiling))] * 100,
                  0),
            "%")
@@ -80,7 +77,7 @@ create_numeric_summary_table <- function(x) {
   if (min(x, na.rm = TRUE) > 0 & nrow(x) > 100) {
     digit_trends_1 <-
       benford(
-        pull(x),
+        dplyr::pull(x),
         number.of.digits = 1,
         discrete = T,
         sign = "positive"
@@ -88,7 +85,7 @@ create_numeric_summary_table <- function(x) {
     benford_chi_1 <- chisq(digit_trends_1)$p.value
     digit_trends_2 <-
       benford(
-        pull(x),
+        dplyr::pull(x),
         number.of.digits = 1,
         discrete = T,
         sign = "positive"
@@ -96,7 +93,7 @@ create_numeric_summary_table <- function(x) {
     benford_chi_2 <- chisq(digit_trends_2)$p.value
 
     benford_p <-
-      if_else(benford_chi_1 < 0.05 | benford_chi_2 < 0.05,
+      dplyr::if_else(benford_chi_1 < 0.05 | benford_chi_2 < 0.05,
               paste0("<mark>Benford p-values: (", round(benford_chi_1, 3), ", ", round(benford_chi_2, 3) , ")</mark>"),
               "")
   } else {
@@ -111,7 +108,7 @@ create_numeric_summary_table <- function(x) {
 
   # print table ----
   cat(
-    glue(
+    glue::glue(
       "<BR>",
       "<table class='table-condensed numeric-summary-table'>\n",
       "  <tr>\n",
@@ -177,13 +174,13 @@ create_numeric_summary_table <- function(x) {
       "    <td> Outlier floor </td>",
       "    <td> {curios::alignx_n(x_o_floor)} </td>",
       "    <td> Out. floor %tile </td>",
-      "    <td> {outlier_floor_quantile} </td>\n",
+      "    <td> {outlier_floor_stats} </td>\n",
       "  </tr>\n",
       "  <tr>\n",
       "    <td> Outlier ceiling </td>",
       "    <td> {curios::alignx_n(x_o_ceiling)} </td>",
       "    <td> Out. ceiling %tile </td>",
-      "    <td> {outlier_ceiling_quantile} </td>\n",
+      "    <td> {outlier_ceiling_stats} </td>\n",
       "  </tr>\n",
       "  <tr>\n",
       "    <td></td>",

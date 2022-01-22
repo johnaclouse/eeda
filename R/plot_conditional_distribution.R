@@ -4,7 +4,7 @@ is_discrete <- function(x, cutoff = 100) {
   ifelse(unique_value_count < cutoff, TRUE, FALSE)
 }
 
-# Setting bins at 30, no optimal value across disparate data sets and discrete
+# Setting bins at 30, no optimal value dplyr::across disparate data sets and discrete
 # count numbers become hard to view as the number of bins increases
 # Zero values are removed to reduce scale issues with remaining data
 # Conditional views of histograms will involve different binwidth.
@@ -150,12 +150,12 @@ plot_conditional_distribution <- function(df,
     effect_size_data %>%
     tidyr::unnest(data) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(Conditional_Value = factor(if_else(
+    dplyr::mutate(Conditional_Value = factor(dplyr::if_else(
       condition == "Positive",
-      if_else(between(0, CI_low, CI_high) == TRUE, "Positive no significant difference", "Positive"),
-      if_else(
+      dplyr::if_else(between(0, CI_low, CI_high) == TRUE, "Positive no significant difference", "Positive"),
+      dplyr::if_else(
         condition == "Negative",
-        if_else(between(0, CI_low, CI_high) == TRUE, "Negative no significant difference", "Negative"),
+        dplyr::if_else(between(0, CI_low, CI_high) == TRUE, "Negative no significant difference", "Negative"),
         "Error"
       )
     )))
@@ -163,7 +163,7 @@ plot_conditional_distribution <- function(df,
 
   outlier_data <- long_data %>%
     dplyr::group_by(feature, condition) %>%
-    dplyr::summarize(outliers = list(boxplot.stats(value)$out),
+    dplyr::summarize(outliers = list(grDevices::boxplot.stats(value)$out),
               .groups = "drop") %>%
     tidyr::unnest(outliers)
 
@@ -190,14 +190,14 @@ plot_conditional_distribution <- function(df,
 
 
 
-  ggplot() +
+  ggplot2::ggplot() +
 
 
 
     # histogram ----
-  geom_histogram(
+  ggplot2::geom_histogram(
     data = plot_data,
-    aes(
+    ggplot2::aes(
       x = value,
       # y = after_stat(density),
       fill = Conditional_Value,
@@ -206,9 +206,9 @@ plot_conditional_distribution <- function(df,
     bins = num_bins,
     alpha = 0.6
   ) +
-    geom_rect(
+    ggplot2::geom_rect(
       data = median_data,
-      aes(
+      ggplot2::aes(
         xmin = ci_lower,
         xmax = ci_upper
       ),
@@ -217,9 +217,9 @@ plot_conditional_distribution <- function(df,
       ymax = Inf,
       alpha = 0.3
     ) +
-    geom_vline(
+    ggplot2::geom_vline(
       data = median_data,
-      aes(
+      ggplot2::aes(
         xintercept = median
       ),
       color = "blue",
@@ -229,9 +229,9 @@ plot_conditional_distribution <- function(df,
 
     {
       if (nrow(outlier_data) > 0) {
-        geom_point(
+        ggplot2::geom_point(
           data = outlier_data,
-          aes(x = outliers,
+          ggplot2::aes(x = outliers,
               y = 0,
               group = condition),
           color = "blue",
@@ -244,9 +244,9 @@ plot_conditional_distribution <- function(df,
 
     } +
 
-    # geom_boxplot(
+    # ggplot2::geom_boxplot(
     #   data = plot_data,
-    #   aes(
+    #   ggplot2::aes(
     #     x = value,
     #     group = condition
     #   ),
@@ -260,10 +260,10 @@ plot_conditional_distribution <- function(df,
   # ) +
 
   # labels ----
-  geom_text(
+  ggplot2::geom_text(
     # data = plot_data %>% distinct(condition, feature, p_value, effsize),
     data = median_data,
-    aes(
+    ggplot2::aes(
       x = Inf,
       y = Inf,
       label = paste("n =", scales::comma(n))
@@ -279,13 +279,13 @@ plot_conditional_distribution <- function(df,
       labeller = labeller(feature = split_label),
       scales = "free_y"
     ) +
-    # scale_x_continuous(trans = "pseudo_log", labels = scales::comma_format()) +
-    scale_x_continuous(trans = sqrt_trans(), labels = scales::comma_format()) +
-    # scale_x_continuous(trans = "log1p", labels = scales::comma_format()) +
-    # scale_x_continuous(labels = scales::comma_format()) +
-    scale_color_manual(values = colors) +
-    scale_fill_manual(values = colors) +
-    labs(
+    # ggplot2::scale_x_continuous(trans = "pseudo_log", labels = scales::comma_format()) +
+    ggplot2::scale_x_continuous(trans = sqrt_trans(), labels = scales::comma_format()) +
+    # ggplot2::scale_x_continuous(trans = "log1p", labels = scales::comma_format()) +
+    # ggplot2::scale_x_continuous(labels = scales::comma_format()) +
+    ggplot2::scale_color_manual(values = colors) +
+    ggplot2::scale_fill_manual(values = colors) +
+    ggplot2::labs(
       title = glue::glue(
         "{caption_data$feature} ~ {condition} (Positive or Negative)
         Density plot with median confidence intervals and outliers by target state"),
@@ -300,17 +300,17 @@ plot_conditional_distribution <- function(df,
       title = "Condition",
       nrow = 1
     )) +
-    theme_minimal() +
-    theme(
-      strip.text = element_text(size = 12),
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      strip.text = ggplot2::element_text(size = 12),
       legend.position = "bottom",
-      panel.spacing.y = unit(0.3, "lines"),
-      panel.grid.minor.y = element_blank(),
-      panel.grid.major.y = element_blank(),
-      strip.background = element_blank(),
-      strip.text.x = element_blank(),
-      # axis.text.y = element_blank(),
-      axis.ticks.y = element_blank()
+      panel.spacing.y = grid::unit(0.3, "lines"),
+      panel.grid.minor.y = ggplot2::element_blank(),
+      panel.grid.major.y = ggplot2::element_blank(),
+      strip.background = ggplot2::element_blank(),
+      strip.text.x = ggplot2::element_blank(),
+      # axis.text.y = ggplot2::element_blank(),
+      axis.ticks.y = ggplot2::element_blank()
     )
 }
 
@@ -331,7 +331,7 @@ plot_conditional_distribution <- function(df,
 #     LN_SDOH_Socio_Rank,
 #     any_of(data$key_measures),
 #   ) %>%
-#   dplyr::mutate(Sex = if_else(Sex == "M", 1, 0))
+#   dplyr::mutate(Sex = dplyr::if_else(Sex == "M", 1, 0))
 
 # plot_conditional_distribution(
 #   df = df,
@@ -359,7 +359,7 @@ plot_conditional_distribution <- function(df,
 #     # Readmits_L12M,
 #     # Sex
 #   ) %>%
-#   dplyr::mutate(across(where(is.numeric), factor))
+#   dplyr::mutate(dplyr::across(where(is.numeric), factor))
 #
 # names(q)[-1] %>%
 #   walk(~ hist(q[[.x]], main  = .x))
@@ -390,31 +390,31 @@ plot_conditional_distribution <- function(df,
 #     TRUE ~ "Unknown"
 #   ))
 #
-# chi_square <- chisq.test(table(q[[2]], if_else(q[1] == "Pos", 1, 0)))
+# chi_square <- chisq.test(table(q[[2]], dplyr::if_else(q[1] == "Pos", 1, 0)))
 #
 # caption_data <-
 #
 #   n <- na.omit(nrow(q))
 #
-# ggplot(long_data,
-#        aes(x = value,
+# ggplot2::ggplot(long_data,
+#        ggplot2::aes(x = value,
 #            fill = condition),
 # ) +
-#   geom_bar(alpha = if_else(chi_square$p.value < alpha, 1, 0.3)) +
+#   ggplot2::geom_bar(alpha = dplyr::if_else(chi_square$p.value < alpha, 1, 0.3)) +
 #   # facet_wrap(~ feature,
 #   #            scales = "free") +
 #
 #   facet_grid(condition ~ feature,
 #              scales = "free") +
-#   scale_y_continuous(labels = scales::comma) +
+#   ggplot2::scale_y_continuous(labels = scales::comma) +
 #
-#   labs(
+#   ggplot2::labs(
 #     caption = glue::glue("n = {scales::comma(n)}   \\
 #                            chi-square p-value = {curios::roundx_n(chi_square$p.value)}"),
 #     x = NULL,
 #     y = NULL,
 #   ) +
-#   theme_minimal()
+#   ggplot2::theme_minimal()
 #
 #
 # feature_by_target <- dlookr::target_by(q, data$target$name)
@@ -435,9 +435,9 @@ plot_conditional_distribution <- function(df,
 # plot(dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex"), typographic = T)
 # plot(dlookr::relate(feature_by_target, "LN_SDOH_WealthIndex"), typographic = T) +
 #   # ggtitle("Foo") +
-#   labs(caption = "My p-value",
+#   ggplot2::labs(caption = "My p-value",
 #        ) +
-#   theme(axis.title.x = element_text(hjust = 0.5),
-#         axis.title.y = element_text(hjust = 0.5)) +
-#   scale_fill_manual(values = c("red", "green", "blue"))
+#   ggplot2::theme(axis.title.x = ggplot2::element_text(hjust = 0.5),
+#         axis.title.y = ggplot2::element_text(hjust = 0.5)) +
+#   ggplot2::scale_fill_manual(values = c("red", "green", "blue"))
 #

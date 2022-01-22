@@ -1,4 +1,3 @@
-library(glue)
 # x <- df["factor_test"]
 
 # css ----
@@ -24,21 +23,21 @@ factor_css <- "
 
 create_factor_summary_table <- function (x) {
   x_table <- tidyr::as_tibble(table(x))
-  x_table$x <- fct_reorder(x_table$x, x_table$n, .desc = T)
-  x_table <- arrange(x_table, desc(n))
+  x_table$x <- forcats::fct_reorder(x_table$x, x_table$n, desc = T)
+  x_table <- arrange(x_table, dplyr::desc(n))
   n_xzv <-
-    if_else(
+    dplyr::if_else(
       caret::nearZeroVar(x, saveMetrics = TRUE)$nzv,
       "<span style='background-color:rgba(255,0,0,0.5)'>Near-zero variance</span>",
       ""
     )
-  n_x <- length(pull(x))
-  n_missing <- sum(is.na(pull(x)))
-  n_empty <- sum(pull(x) == "")
+  n_x <- length(dplyr::pull(x))
+  n_missing <- sum(is.na(dplyr::pull(x)))
+  n_empty <- sum(dplyr::pull(x) == "")
   empty_ratio <- n_empty / n_x
-  n_nonmissing <- sum(!is.na(pull(x)))
+  n_nonmissing <- sum(!is.na(dplyr::pull(x)))
   missing_ratio <- n_missing / n_x
-  x_w <- na.omit(pull(x))
+  x_w <- na.omit(dplyr::pull(x))
   unique_n <- length(unique(x_w))
 
   style <- "'
@@ -72,7 +71,7 @@ create_factor_summary_table <- function (x) {
 
 
   cat(
-    glue(
+    glue::glue(
       "<BR>",
       "<table class='table-condensed factor-summary-table'>\n",
       "  <tr>\n",

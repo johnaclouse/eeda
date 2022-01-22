@@ -4,16 +4,16 @@ create_date_plot <-
            height = 400 / 72,
            dpi = 72) {
     x_name <- names(x)
-    plot_result <- ggplot(x) +
-      geom_point(aes_string(x = 1:nrow(x),
+    plot_result <- ggplot2::ggplot(x) +
+      ggplot2::geom_point(ggplot2::aes_string(x = 1:nrow(x),
                             y = x_name),
                  color = palette_colors$graylagoon$bondi) +
-      xlab("Index") +
+      ggplot2::xlab("Index") +
       theme_minimal() +
-      theme(axis.title.y = element_blank())
-    
+      theme(axis.title.y = ggplot2::element_blank())
+
     png_file <- tempfile(fileext = ".png")
-    ggsave(
+    fggplot2::ggsave(
       filename = png_file,
       dev = "png",
       plot = plot_result,

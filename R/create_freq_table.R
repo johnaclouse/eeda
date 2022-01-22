@@ -1,6 +1,6 @@
 create_freq_table <- function(x,
                               max_lines = 1000) {
-  # fct_infreq(x[[1]]) %>%
+  # forcats::fct_infreq(x[[1]]) %>%
   #   table()  %>%
   #   as_tibble() %>%
   #   DT::datatable(
@@ -38,10 +38,10 @@ create_freq_table <- function(x,
 
   x_name <- names(x)
   html_table <- na.omit(x) %>%
-    dplyr::group_by(across(all_of(x_name))) %>%
+    dplyr::group_by(dplyr::across(all_of(x_name))) %>%
     dplyr::summarize(n = n()) %>%
     dplyr::mutate(Proportion = round(n / sum(n), 2)) %>%
-    dplyr::arrange(desc(n)) %>%
+    dplyr::arrange(dplyr::desc(n)) %>%
     dplyr::slice(1:max_lines)
 
   names(html_table) <- c("Value", "n", "Proportion")

@@ -4,8 +4,6 @@ if (is.null(getOption("eeda_css_added")) == TRUE) {
 }
 
 
-# css ----
-numeric_css <- "
   <style>
     .numeric-summary-table {white-space:nowrap}
     .numeric-summary-table tr>td:nth-child(even) {text-align:right;}
@@ -22,6 +20,5 @@ numeric_css <- "
     .numeric-summary-table tr:nth-child(4),
     .numeric-summary-table tr:nth-child(10) {height:45px; vertical-align: bottom;}
   </style>
-  "
 
 

@@ -127,7 +127,7 @@ conglomerate_eda <- function(x,
 
     if (is.character(x[[1]])) render_character(x)
     if (is.factor(x[[1]])) render_factor(x)
-    if (DescTools::IsDate(x[[1]])) render_date(x)
+    if (class(x[[1]]) == "Date") render_date(x)
     if (is.numeric(x[[1]])) {
       if (is_discrete(x[[1]])) {
         render_discrete(x)

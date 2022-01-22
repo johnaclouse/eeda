@@ -5,9 +5,9 @@ create_discrete_plot <-
            dpi = 72) {
     # x = mpg["year"]
     # x[5:10,"year"]<-NA
-    n <- pull(x)
+    n <- dplyr::pull(x)
     x_w <- na.omit(n)
-    x_o <- boxplot.stats(x_w)$out
+    x_o <- grDevices::boxplot.stats(x_w)$out
     x_wo <- na.omit(ifelse(x_w %in% x_o, NA, x_w))
     x_name <- stringr::str_replace_all(names(x)[1], " ", "")
     names(x)[1] <- x_name
@@ -28,32 +28,32 @@ create_discrete_plot <-
       return(function(x) {x[c(TRUE, rep(FALSE, n - 1))]})
     }
 
-    plot_result <- ggplot(data = x) +
-      geom_bar(
-        aes_string(x = x_name,
+    plot_result <- ggplot2::ggplot(data = x) +
+      ggplot2::geom_bar(
+        ggplot2::aes_string(x = x_name,
                    fill = "type")
       ) +
-      scale_fill_manual(values = c("Missing" = palette_colors$graylagoon$gray, "Inlier" = palette_colors$graylagoon$bondi, "Outlier" = palette_colors$graylagoon$plum)) +
-      scale_x_discrete(breaks = every_nth(n = label_interval)) +
-      theme_minimal() +
-      theme(legend.title = element_blank(),
-            legend.text=element_text(size=rel(1.2)))
+      ggplot2::scale_fill_manual(values = c("Missing" = palette_colors$graylagoon$gray, "Inlier" = palette_colors$graylagoon$bondi, "Outlier" = palette_colors$graylagoon$plum)) +
+      ggplot2::scale_x_discrete(breaks = every_nth(n = label_interval)) +
+      ggplot2::theme_minimal() +
+      ggplot2::theme(legend.title = ggplot2::element_blank(),
+            legend.text=ggplot2::element_text(size=rel(1.2)))
 
-    # plot_result <- ggplot() +
-    #   geom_bar(
-    #     aes(x = x_o),
+    # plot_result <- ggplot2::ggplot() +
+    #   ggplot2::geom_bar(
+    #     ggplot2::aes(x = x_o),
     #     fill = "red"
     #   ) +
-    #   geom_bar(
-    #     aes(x = x_wo),
+    #   ggplot2::geom_bar(
+    #     ggplot2::aes(x = x_wo),
     #     fill = "#0c4c8a",
     #   ) +
-    #   theme_minimal() +
-    #   theme(axis.title.x = element_blank(),
-    #         axis.title.y = element_blank())
+    #   ggplot2::theme_minimal() +
+    #   ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+    #         axis.title.y = ggplot2::element_blank())
 
     png_file <- tempfile(fileext = ".png")
-    ggsave(
+    ggplot2::ggsave(
       filename = png_file,
       dev = "png",
       plot = plot_result,
