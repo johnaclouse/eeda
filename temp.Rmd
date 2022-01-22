@@ -1,0 +1,30 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: scroll
+---
+
+```{r results="asis"}
+curios::add_custom_style()
+```
+
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+load("data/eeda_test_data.RData")
+source("R/conglomerate_eda.R")
+```
+
+
+```{r results="asis"}
+# TRY REMOVING WIDTH FOR TABLES AVOID WASTING SPACE
+
+# ADD NO WRAP O OTHER TABLE CLASSES THEN RE-EVALUATE ALL CLASSES
+# FIND COMMON APPROACH TO CHECKING OPTIONS AND ADDING STYLE IF NOT YET CALLED
+# INSTEAD, CREATE A COMBINED CSS SHEET FOR EEDA AND ISSUE AN ERROR IF THERE IS NO EVIDENCE OF IT BEING DEPLOYED
+names(eeda_test_data) %>% 
+  furrr::future_walk(~ conglomerate_eda(eeda_test_data[1:200, .x]))
+```

@@ -1,0 +1,27 @@
+if (is.null(getOption("eeda_css_added")) == TRUE) {
+  options("eeda_css_added" = TRUE)
+  cat(numeric_css)
+}
+
+
+# css ----
+numeric_css <- "
+  <style>
+    .numeric-summary-table {white-space:nowrap}
+    .numeric-summary-table tr>td:nth-child(even) {text-align:right;}
+    .numeric-summary-table tr>td:nth-child(odd) {text-align:right; font-weight: bold;}
+    .numeric-summary-table tr:nth-child(4),
+    .numeric-summary-table tr:nth-child(5),
+    .numeric-summary-table tr:nth-child(6),
+    .numeric-summary-table tr:nth-child(7),
+    .numeric-summary-table tr:nth-child(8),
+    .numeric-summary-table tr:nth-child(9),
+    .numeric-summary-table tr:nth-child(10),
+    .numeric-summary-table tr:nth-child(11),
+    .numeric-summary-table tr:nth-child(12) {line-height:0.75;}
+    .numeric-summary-table tr:nth-child(4),
+    .numeric-summary-table tr:nth-child(10) {height:45px; vertical-align: bottom;}
+  </style>
+  "
+
+
