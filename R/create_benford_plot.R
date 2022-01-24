@@ -47,7 +47,7 @@ create_benford_plot <- function(x,
       ggplot2::theme_minimal() +
       ggplot2::theme(plot.margin = grid::unit(c(5, 30, 5, 5), "pt"))
 
-    plot_result <- single_digit + two_digits
+    plot_result <- cowplot::plot_grid(single_digit, two_digits, ncol = 2)
 
     png_file <- tempfile(fileext = ".png")
     ggplot2::ggsave(

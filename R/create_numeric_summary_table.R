@@ -1,27 +1,3 @@
-# x = mpg["model"]
-# x = mpg["hwy"]
-# x = df["CDR_Hypertension"]
-
-# css ----
-numeric_css <- "
-  <style>
-    .numeric-summary-table {white-space:nowrap}
-    .numeric-summary-table tr>td:nth-child(even) {text-align:right;}
-    .numeric-summary-table tr>td:nth-child(odd) {text-align:right; font-weight: bold;}
-    .numeric-summary-table tr:nth-child(4),
-    .numeric-summary-table tr:nth-child(5),
-    .numeric-summary-table tr:nth-child(6),
-    .numeric-summary-table tr:nth-child(7),
-    .numeric-summary-table tr:nth-child(8),
-    .numeric-summary-table tr:nth-child(9),
-    .numeric-summary-table tr:nth-child(10),
-    .numeric-summary-table tr:nth-child(11),
-    .numeric-summary-table tr:nth-child(12) {line-height:0.75;}
-    .numeric-summary-table tr:nth-child(4),
-    .numeric-summary-table tr:nth-child(10) {height:45px; vertical-align: bottom;}
-  </style>
-  "
-
 create_numeric_summary_table <- function(x) {
   n_xzv <-
     dplyr::if_else(
@@ -94,19 +70,12 @@ create_numeric_summary_table <- function(x) {
 
     benford_p <-
       dplyr::if_else(benford_chi_1 < 0.05 | benford_chi_2 < 0.05,
-              paste0("<mark>Benford p-values: (", round(benford_chi_1, 3), ", ", round(benford_chi_2, 3) , ")</mark>"),
-              "")
+                     paste0("<mark>Benford p-values: (", round(benford_chi_1, 3), ", ", round(benford_chi_2, 3) , ")</mark>"),
+                     "")
   } else {
     benford_p <- ""
   }
 
-
-  if (is.null(getOption("numeric_summary_css_added")) == TRUE) {
-    options("numeric_summary_css_added" = TRUE)
-    cat(system.file("extdata", "eeda.css", package = "eeda"))
-  }
-
-  # print table ----
   cat(
     glue::glue(
       "<BR>",

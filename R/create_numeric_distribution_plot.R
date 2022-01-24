@@ -1,4 +1,4 @@
-library(patchwork)
+# x = eeda_test_data["eg_continuous_na"]
 create_numeric_distribution_plot <-
   function(x,
            width = 450 / 72,
@@ -33,6 +33,7 @@ create_numeric_distribution_plot <-
       ) +
       ggplot2::theme_minimal() +
       ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                     axis.text = ggplot2::element_blank(),
             axis.title.y = ggplot2::element_blank())
 
     box_wo <- ggplot2::ggplot() +
@@ -45,6 +46,7 @@ create_numeric_distribution_plot <-
       ) +
       ggplot2::theme_minimal() +
       ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                     axis.text = ggplot2::element_blank(),
             axis.title.y = ggplot2::element_blank())
 
     hist_w <- ggplot2::ggplot() +
@@ -52,6 +54,7 @@ create_numeric_distribution_plot <-
       ggplot2::geom_density(fill = palette_colors$graylagoon$lagoon) +
       ggplot2::theme_minimal() +
       ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                     axis.text.y = ggplot2::element_blank(),
             axis.title.y = ggplot2::element_blank())
 
     hist_wo <- ggplot2::ggplot() +
@@ -60,10 +63,10 @@ create_numeric_distribution_plot <-
                    alpha = 0.6, ) +
       ggplot2::theme_minimal() +
       ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                     axis.text.y = ggplot2::element_blank(),
             axis.title.y = ggplot2::element_blank())
 
-    plot_result <- (box_w / hist_w) | (box_wo / hist_wo)
-
+    plot_result <- cowplot::plot_grid(box_w, box_wo, hist_w, hist_wo, ncol = 2)
     png_file <- tempfile(fileext = ".png")
     ggplot2::ggsave(
       filename = png_file,

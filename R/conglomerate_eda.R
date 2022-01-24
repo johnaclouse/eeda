@@ -1,21 +1,3 @@
-# source("R/is_discrete.R")
-# source("R/create_color_palettes.R")
-# source(here::here("R", "create_numeric_summary_table.R"))
-# source(here::here("R", "create_numeric_scatter_plot.R"))
-# source(here::here("R", "create_numeric_distribution_plot.R"))
-# source(here::here("R", "create_benford_plot.R"))
-#
-# source(here::here("R", "create_discrete_summary_table.R"))
-# source(here::here("R", "create_discrete_plot.R"))
-#
-# source(here::here("R", "create_date_summary_table.R"))
-# source(here::here("R", "create_date_plot.R"))
-#
-# source(here::here("R", "create_factor_summary_table.R"))
-# source(here::here("R", "create_wordcloud.R"))
-# source(here::here("R", "create_freq_table.R"))
-
-
 render_character <- function(x) {
   x_name <- names(x)
   if (length(unique(x[[1]])) == length(x[[1]]) |
@@ -54,7 +36,6 @@ render_factor <- function(x) {
 
     cat("<td style='padding-left: 5em; width:400px; vertical-align:top;'>\n")
     freq_table <- create_freq_table(x)
-    cat(freq_table$css)
     cat(freq_table$table)
     cat("</td>\n")
   }
@@ -108,10 +89,26 @@ render_discrete <- function(x) {
   cat("</td>\n")
 }
 
+#' A conglomeration of univariate and bivariate EDA visualizations
+#'
+#' The function has several side-effects including the creation of one or more
+#' plots in a temporary folder. The function is intended to be run from within a
+#' R Markdown of flexdashboad document in a code chunk with results="asis"
+#' @param x a dataframe
+#' @param include_univariate logical
+#' @param bivariate_categorical_target logical
+#' @param bivariate_continuous_target logical
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # conglomerate_eda(eeda::eeda_test_data["eg_continuous"])
 conglomerate_eda <- function(x,
                              include_univariate = TRUE,
                              bivariate_categorical_target = NULL,
                              bivariate_continuous_target = NULL) {
+  add_eeda_style()
   x_name <- names(x)
   message("Conglomerating EDA for:", x_name)
 
@@ -135,4 +132,4 @@ conglomerate_eda <- function(x,
     cat("</tr>\n</table>\n")
   }
 }
-# x = test_data["eg_continuous"]
+

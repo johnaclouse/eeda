@@ -1,26 +1,3 @@
-# x <- df["factor_test"]
-
-# css ----
-factor_css <- "
-  <style>
-    .factor-summary-table{white-space:nowrap}
-
-    .factor-summary-table tr>td:nth-child(even) {text-align:right;}
-    .factor-summary-table tr>td:nth-child(odd) {text-align:right; font-weight: bold;}
-    .factor-summary-table tr:nth-child(4),
-    .factor-summary-table tr:nth-child(5),
-    .factor-summary-table tr:nth-child(6),
-    .factor-summary-table tr:nth-child(7),
-    .factor-summary-table tr:nth-child(8),
-    .factor-summary-table tr:nth-child(9),
-    .factor-summary-table tr:nth-child(10),
-    .factor-summary-table tr:nth-child(11),
-    .factor-summary-table tr:nth-child(12) {line-height:0.75;}
-    .factor-summary-table tr:nth-child(4),
-    .factor-summary-table tr:nth-child(10) {height:45px; vertical-align: bottom;}
-  </style>
-  "
-
 create_factor_summary_table <- function (x) {
   # binding variable just to keep R CMD Check from seeing NSE as global variables
   n <- NULL
@@ -41,36 +18,6 @@ create_factor_summary_table <- function (x) {
   missing_ratio <- n_missing / n_x
   x_w <- stats::na.omit(dplyr::pull(x))
   unique_n <- length(unique(x_w))
-
-  style <- "'
-    /* table{border-collapse: separate;} */
-    .factor-summary-table table {border-collapse: separate;}
-
-    /* row 1 is for near zero variance warnings */
-
-    /* rows */
-    /* top and bottom rows spaced further apart */
-    .factor-summary-table tbody>:nth-child(2),
-    .factor-summary-table tbody>:nth-child(3),
-    .factor-summary-table tbody>:nth-child(4) {
-    line-height:1.1;
-    }
-
-    /* columns */
-    /* horizontal separation for middle section */
-    .factor-summary-table tbody>tr>:nth-child(3),
-    .factor-summary-table tbody>tr>:nth-child(5) {
-    border-left: 15px solid transparent;
-    }
-
-    /* right align values*/
-    .factor-summary-table tbody>tr>:nth-child(2),
-    .factor-summary-table tbody>tr>:nth-child(4),
-    .factor-summary-table tbody>tr>:nth-child(6) {
-    text-align:right;
-    color:blue;
-    }'"
-
 
   cat(
     glue::glue(

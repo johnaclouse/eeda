@@ -13,6 +13,7 @@ Imports:
     benford.analysis,
     boot,
     caret,
+    cowplot,
     dplyr,
     effectsize,
     forcats,

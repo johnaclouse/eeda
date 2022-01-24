@@ -1,24 +1,86 @@
-if (is.null(getOption("eeda_css_added")) == TRUE) {
-  options("eeda_css_added" = TRUE)
-  cat(numeric_css)
-}
+/* table{border-collapse: separate;} */
+.factor-summary-table table {white-space:nowrap border-collapse: separate;}
+
+/* row 1 is for near zero variance warnings */
+
+/* rows */
+/* top and bottom rows spaced further apart */
+.factor-summary-table tbody>:nth-child(2),
+.factor-summary-table tbody>:nth-child(3),
+.factor-summary-table tbody>:nth-child(4) {line-height:1.1;}
+
+/* columns */
+/* horizontal separation for middle section */
+.factor-summary-table tbody>tr>:nth-child(3),
+.factor-summary-table tbody>tr>:nth-child(5) {border-left: 15px solid transparent;}
+
+/* right align values*/
+.factor-summary-table tbody>tr>:nth-child(2),
+.factor-summary-table tbody>tr>:nth-child(4),
+.factor-summary-table tbody>tr>:nth-child(6) {text-align:right; color:blue;}
 
 
-  <style>
-    .numeric-summary-table {white-space:nowrap}
-    .numeric-summary-table tr>td:nth-child(even) {text-align:right;}
-    .numeric-summary-table tr>td:nth-child(odd) {text-align:right; font-weight: bold;}
-    .numeric-summary-table tr:nth-child(4),
-    .numeric-summary-table tr:nth-child(5),
-    .numeric-summary-table tr:nth-child(6),
-    .numeric-summary-table tr:nth-child(7),
-    .numeric-summary-table tr:nth-child(8),
-    .numeric-summary-table tr:nth-child(9),
-    .numeric-summary-table tr:nth-child(10),
-    .numeric-summary-table tr:nth-child(11),
-    .numeric-summary-table tr:nth-child(12) {line-height:0.75;}
-    .numeric-summary-table tr:nth-child(4),
-    .numeric-summary-table tr:nth-child(10) {height:45px; vertical-align: bottom;}
-  </style>
 
+.numeric-summary-table tr>td:nth-child(even) {text-align:right;}
+.numeric-summary-table tr>td:nth-child(odd) {text-align:right; font-weight: bold;}
+.numeric-summary-table tr:nth-child(4),
+.numeric-summary-table tr:nth-child(5),
+.numeric-summary-table tr:nth-child(6),
+.numeric-summary-table tr:nth-child(7),
+.numeric-summary-table tr:nth-child(8),
+.numeric-summary-table tr:nth-child(9),
+.numeric-summary-table tr:nth-child(10),
+.numeric-summary-table tr:nth-child(11),
+.numeric-summary-table tr:nth-child(12) {line-height:0.75;}
+.numeric-summary-table tr:nth-child(4),
+.numeric-summary-table tr:nth-child(10) {height:45px; vertical-align: bottom;}
+
+
+
+.discrete-summary-table tr>td:nth-child(even) {text-align:right;}
+.discrete-summary-table tr>td:nth-child(odd) {text-align:right; font-weight: bold;}
+.discrete-frequency-table tr:nth-child(2),
+.discrete-frequency-table tr:nth-child(3),
+.discrete-frequency-table tr:nth-child(4) {line-height: 0.75;}
+.discrete-frequency-table td:nth-child(1),
+.discrete-frequency-table td:nth-child(2),
+.discrete-frequency-table td:nth-child(3) {text-align: right;}
+
+
+
+/* table{border-collapse: separate;} */
+.date-summary-table table{border-collapse: separate;}
+
+/* rows */
+/* min through max stats spaced closer together */
+.date-summary-table tbody>:nth-child(3),
+.date-summary-table tbody>:nth-child(4),
+.date-summary-table tbody>:nth-child(5),
+.date-summary-table tbody>:nth-child(6),
+.date-summary-table tbody>:nth-child(7) {line-height:0.75;}
+
+.date-summary-table tr:nth-child(3) {height:45px; vertical-align: bottom;}
+
+/* columns */
+/* horizontal separation for middle section */
+.date-summary-table tbody>tr>:nth-child(3) {border-left: 40px solid transparent;}
+
+/* bold labels*/
+.date-summary-table tbody>tr>:nth-child(1),
+.date-summary-table tbody>tr>:nth-child(3),
+.date-summary-table tbody>tr>:nth-child(5) {text-align:left; font-weight:bold;}
+
+/* right align values*/
+.date-summary-tabletbody>tr>:nth-child(2),
+.date-summary-table tbody>tr>:nth-child(4),
+.date-summary-table tbody>tr>:nth-child(6) {text-align:right;}
+
+
+
+.summary_freq_table {white-space:nowrap}
+.summary_freq_table { border: 10px; width: 300px; height:180px;}
+.summary_freq_table tr>td:first-child {width: 200px;}
+.summary_freq_table tr>td:last-child {width: 40px; padding-right: 40px;}
+.summary_freq_table tr>th:last-child {width: 40px; padding-right: 40px;}
+.summary_freq_table th {position: sticky; top: 0; background: white;}
 

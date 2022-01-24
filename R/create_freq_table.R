@@ -21,23 +21,11 @@ create_freq_table <- function(x,
   #   ) %>%
   #   htmltools::tagList()
 
-  result <- list()
   div <- if (nrow(unique(x)) > 15) {
     "<div style = 'overflow-y: scroll; height:360px;'>"
   } else {
     "<div>"
   }
-
-  style <-  "<style>
-  .summary_freq_table {white-space:nowrap}
-  .summary_freq_table { border: 10px; width: 300px; height:180px;}
-  .summary_freq_table tr>td:first-child {width: 200px;}
-  .summary_freq_table tr>td:last-child {width: 40px; padding-right: 40px;}
-  .summary_freq_table tr>th:last-child {width: 40px; padding-right: 40px;}
-  .summary_freq_table th {position: sticky; top: 0; background: white;}
-  </style>"
-
-  result$css <- paste(div, style)
 
   x_name <- names(x)
   html_table <- stats::na.omit(x) %>%
@@ -53,7 +41,7 @@ create_freq_table <- function(x,
     kableExtra::column_spec(1, width = "30em") %>%
     kableExtra::column_spec(c(2,3), width = "10em")
 
-  result$table <- paste(html_table, "</div>\n")
+  result$table <- paste(div, html_table, "</div>\n")
   return(result)
 }
 
