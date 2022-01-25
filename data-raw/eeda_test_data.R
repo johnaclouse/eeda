@@ -1,4 +1,4 @@
-set.seed(47)
+set.seed(100)
 eeda_test_data <- tidyr::tibble(
   eg_factor_4 = factor(sample(c("Dragon", "Fish", "Raccoon", "Dog"), 2000, replace = TRUE)),
   eg_factor_4_na = eg_factor_4,

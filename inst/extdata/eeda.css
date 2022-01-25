@@ -1,3 +1,4 @@
+<style>
 /* table{border-collapse: separate;} */
 .factor-summary-table table {white-space:nowrap border-collapse: separate;}
 
@@ -79,8 +80,9 @@
 
 .summary_freq_table {white-space:nowrap}
 .summary_freq_table { border: 10px; width: 300px; height:180px;}
-.summary_freq_table tr>td:first-child {width: 200px;}
-.summary_freq_table tr>td:last-child {width: 40px; padding-right: 40px;}
 .summary_freq_table tr>th:last-child {width: 40px; padding-right: 40px;}
 .summary_freq_table th {position: sticky; top: 0; background: white;}
+.summary_freq_table tr>td:first-child {width: 200px;}
+.summary_freq_table tr>td:last-child {width: 40px; padding-right: 40px;}
 
+</style>

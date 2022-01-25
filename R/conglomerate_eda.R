@@ -20,53 +20,53 @@ render_factor <- function(x) {
   if (stringr::str_detect(names(x), "_Id")) {
     cat("<td> Identifier </td>\n")
   } else {
-    cat("<td style='vertical-align:top; width:475px;'>\n")
-    # cat("<td style='padding-right: 1.5em; width:450px; vertical-align:text-top;'>\n")
+    cat("<td style='vertical-align:top;'>\n")
     cat(create_factor_summary_table(x))
     cat("</td>\n")
 
-    cat("<td style='vertical-align:top; padding-right:80px;'>\n")
+    cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
     word_cloud_png <- create_wordcloud(x, 125)
     if (word_cloud_png != "") {
-      cat("<img src='", word_cloud_png, "' style = 'max-width: 100%; height: auto;'>", sep = "")
+      # cat("<img src='", word_cloud_png, "' style = 'max-width: 100%; height: auto;'>", sep = "")
+      # cat("<img src='", word_cloud_png, "' style = 'height: 400px;'>", sep = "")
+      cat("<img src='", word_cloud_png, "'>", sep = "")
     } else {
       cat("All values present were unique")
     }
     cat("</td>\n")
 
-    cat("<td style='padding-left: 5em; width:400px; vertical-align:top;'>\n")
-    freq_table <- create_freq_table(x)
-    cat(freq_table$table)
+    cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+    cat(create_freq_table(x))
     cat("</td>\n")
   }
 }
 
 
 render_date <- function(x) {
-  cat("<td style='padding-right: 1.5em; width:500px; vertical-align:text-top;'>\n")
+  cat("<td style='vertical-align:text-top;'>\n")
   cat(create_date_summary_table(x))
   cat("</td>\n")
 
-  cat("<td style='vertical-align:top;'>\n")
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
   cat("<img src='", create_date_plot(x), "'>", sep = "")
   cat("</td>\n")
 }
 
 
 render_numeric <- function(x) {
-  cat("<td style='vertical-align: text-top; width:375px'>\n")
+  cat("<td style='vertical-align:top;'>\n")
   cat(create_numeric_summary_table(x))
   cat("</td>\n")
 
-  cat("<td style='padding-left: 1em; width:475px; vertical-align:top;'>\n")
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
   cat("<img src='", create_numeric_scatter_plot(x), "'>", sep = "")
   cat("</td>\n")
 
-  cat("<td style='padding-left: 1em; width:450px; vertical-align:top;'>\n")
+  cat("<td style='vertical-align:top;'>\n")
   cat("<img src='", create_numeric_distribution_plot(x), "'>", sep = "")
   cat("</td>\n")
 
-  cat("<td style='padding-left: 1em; width:300px; vertical-align:top;'>\n")
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
   cat(create_benford_plot(x))
   cat("</td>\n")
 }
@@ -74,17 +74,15 @@ render_numeric <- function(x) {
 
 
 render_discrete <- function(x) {
-  cat("<td style='vertical-align: text-top; width:375px'>\n")
+  cat("<td style='vertical-align: text-top;'>\n")
   cat(create_discrete_summary_table(x))
   cat("</td>\n")
 
-  cat("<td style='padding-left: 1em; width:700px; vertical-align:top;'>\n")
-  cat("<img src='", create_discrete_plot(x), "'>",
-      sep = ""
-  )
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+  cat("<img src='", create_discrete_plot(x), "'>", sep = "")
   cat("</td>\n")
 
-  cat("<td style='padding-left: 5em; width:325px; vertical-align:top;'>\n")
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
   cat(unlist(create_freq_table(x)))
   cat("</td>\n")
 }
@@ -99,7 +97,7 @@ render_discrete <- function(x) {
 #' @param bivariate_categorical_target logical
 #' @param bivariate_continuous_target logical
 #'
-#' @return
+#' @return returns html containing css, summaries, and graphs for included analysis.
 #' @export
 #'
 #' @examples
@@ -112,7 +110,7 @@ conglomerate_eda <- function(x,
   x_name <- names(x)
   message("Conglomerating EDA for:", x_name)
 
-    cat("\n\n###", x_name, "\n\n")
+    cat("\n\n###", x_name, " {data-height=500} \n\n")
 
   # univariate table
   if (include_univariate) {
@@ -128,7 +126,6 @@ conglomerate_eda <- function(x,
         render_numeric(x)
       }
     }
-
     cat("</tr>\n</table>\n")
   }
 }

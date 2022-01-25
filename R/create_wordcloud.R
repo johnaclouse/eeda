@@ -1,8 +1,8 @@
 create_wordcloud <-
   function(x,
            word_count = 125,
-           width = 1294 / 72,
-           height = 800 / 72,
+           width = 647 / 72,
+           height = 400 / 72,
            dpi = 72) {
 
     # binding variable just to keep R CMD Check from seeing NSE as global variables
@@ -26,8 +26,8 @@ create_wordcloud <-
             color = factor(n)
           ),
           rm_outside = TRUE,
-          max_steps = 1,
-          grid_size = 1,
+          #max_steps = 1,
+          # grid_size = 1,
           eccentricity = 0.9
         ) +
         # ggplot2::scale_radius(range = c(2, 18), limits = c(0, NA)) +

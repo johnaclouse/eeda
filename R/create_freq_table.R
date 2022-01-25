@@ -3,24 +3,6 @@ create_freq_table <- function(x,
   # binding variable just to keep R CMD Check from seeing NSE as global variables
   n <- NULL
 
-  # forcats::fct_infreq(x[[1]]) %>%
-  #   table()  %>%
-  #   as_tibble() %>%
-  #   DT::datatable(
-  #     rownames = FALSE,
-  #     colnames = NULL,
-  #     height = 300,
-  #     options = list(
-  #       dom = "ft",
-  #       autoWidth = TRUE,
-  #       pageLength = -1,
-  #       lengthChange = FALSE,
-  #       scrollY = '300px',
-  #       filter = "top"
-  #     )
-  #   ) %>%
-  #   htmltools::tagList()
-
   div <- if (nrow(unique(x)) > 15) {
     "<div style = 'overflow-y: scroll; height:360px;'>"
   } else {
@@ -33,15 +15,16 @@ create_freq_table <- function(x,
     dplyr::summarize(n = dplyr::n()) %>%
     dplyr::mutate(Proportion = round(n / sum(n), 2)) %>%
     dplyr::arrange(dplyr::desc(n)) %>%
-    dplyr::slice(1:max_lines)
+    dplyr::slice(1:max_lines) %>%
+    dplyr::mutate(spacer = "")
 
-  names(html_table) <- c("Value", "n", "Proportion")
-  html_table <- knitr::kable(html_table) %>%
-    kableExtra::row_spec(0, align = "c") %>%
-    kableExtra::column_spec(1, width = "30em") %>%
-    kableExtra::column_spec(c(2,3), width = "10em")
+  html_table <- knitr::kable(html_table,
+                             col.names = c("Value", "n", "Proportion", "")) %>%
+    kableExtra::row_spec(0, align = "r") %>%
+    # kableExtra::column_spec(1, width = "30em") %>%
+    kableExtra::column_spec(c(2), width_min = "4em") %>%
+    kableExtra::column_spec(c(3), width_min = "6em") %>%
+    kableExtra::column_spec(c(4), width_min = "1em")
 
-  result$table <- paste(div, html_table, "</div>\n")
-  return(result)
+  cat(div, html_table, "</div>\n")
 }
-

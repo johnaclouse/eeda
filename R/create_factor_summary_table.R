@@ -54,4 +54,3 @@ create_factor_summary_table <- function (x) {
     )
   )
 }
-
