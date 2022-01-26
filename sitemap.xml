@@ -19,13 +19,13 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/conglomerate_eda.html</loc>
-  </url>
-  <url>
     <loc>/reference/eeda-package.html</loc>
   </url>
   <url>
     <loc>/reference/eeda_test_data.html</loc>
+  </url>
+  <url>
+    <loc>/reference/extra_eda.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
