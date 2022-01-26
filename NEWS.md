@@ -1,3 +1,3 @@
-# eeda 0.0.0.9001
+# extra_eda 0.0.0.9001
 
 * Code imported from disparate sources to be rationalized into a package.

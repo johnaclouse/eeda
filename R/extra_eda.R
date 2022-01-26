@@ -102,7 +102,7 @@ render_discrete <- function(x) {
 #'
 #' @examples
 #' # conglomerate_eda(eeda::eeda_test_data["eg_continuous"])
-conglomerate_eda <- function(x,
+extra_eda <- function(x,
                              include_univariate = TRUE,
                              bivariate_categorical_target = NULL,
                              bivariate_continuous_target = NULL) {
