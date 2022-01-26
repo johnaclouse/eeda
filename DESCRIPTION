@@ -1,5 +1,5 @@
-Package: extra_eda
-Title: Univariate and bivariate exploratory data analysis
+Package: eeda
+Title: Univariate and bivariate exploratory data analysis, but extra
 Version: 0.0.0.9001
 Authors@R: 
     person("John", "Clouse", , "john@clouse.io", role = c("aut", "cre"),

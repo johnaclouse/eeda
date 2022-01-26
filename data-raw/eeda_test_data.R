@@ -1,5 +1,5 @@
 set.seed(100)
-extra_eda_test_data <- tidyr::tibble(
+eeda_test_data <- tidyr::tibble(
   eg_factor_4 = factor(sample(c("Dragon", "Fish", "Raccoon", "Dog"), 2000, replace = TRUE)),
   eg_factor_4_na = eg_factor_4,
   eg_factor_12 = factor(sample(colors(), 2000, replace = TRUE)),
@@ -29,15 +29,15 @@ extra_eda_test_data <- tidyr::tibble(
   eg_date_na = eg_date
 )
 
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "eg_factor_4_na"] <- NA
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "eg_factor_12_na"] <- NA
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "high_cardinality_na"] <- NA
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "eg_continuous_na"] <- NA
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "eg_binary_na"] <- NA
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "eg_logical_na"] <- NA
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "eg_integer_na"] <- NA
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "eg_character_na"] <- NA
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "eg_long_character_na"] <- NA
-extra_eda_test_data[sample(1:nrow(extra_eda_test_data), 200), "eg_date_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_factor_4_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_factor_12_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "high_cardinality_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_continuous_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_binary_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_logical_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_integer_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_character_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_long_character_na"] <- NA
+eeda_test_data[sample(1:nrow(eeda_test_data), 200), "eg_date_na"] <- NA
 
-usethis::use_data(extra_eda_test_data, overwrite = TRUE)
+usethis::use_data(eeda_test_data, overwrite = TRUE)

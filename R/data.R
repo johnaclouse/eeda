@@ -6,4 +6,4 @@
 #' NA values.
 #'
 #' @format A tibble
-"extra_eda_test_data"
+"eeda_test_data"

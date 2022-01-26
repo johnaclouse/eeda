@@ -101,12 +101,12 @@ render_discrete <- function(x) {
 #' @export
 #'
 #' @examples
-#' # conglomerate_eda(extra_eda::extra_eda_test_data["eg_continuous"])
-extra_eda <- function(x,
+#' # conglomerate_eda(eeda::eeda_test_data["eg_continuous"])
+eeda <- function(x,
                              include_univariate = TRUE,
                              bivariate_categorical_target = NULL,
                              bivariate_continuous_target = NULL) {
-  add_extra_eda_style()
+  add_eeda_style()
   x_name <- names(x)
   message("Conglomerating EDA for:", x_name)
 

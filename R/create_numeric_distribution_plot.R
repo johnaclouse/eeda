@@ -1,4 +1,4 @@
-# x = extra_eda_test_data["eg_continuous_na"]
+# x = eeda_test_data["eg_continuous_na"]
 create_numeric_distribution_plot <-
   function(x,
            width = 450 / 72,

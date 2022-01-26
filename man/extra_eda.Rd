@@ -29,5 +29,5 @@ plots in a temporary folder. The function is intended to be run from within a
 R Markdown of flexdashboad document in a code chunk with results="asis"
 }
 \examples{
-# conglomerate_eda(eeda::eeda_test_data["eg_continuous"])
+# conglomerate_eda(extra_eda::extra_eda_test_data["eg_continuous"])
 }
