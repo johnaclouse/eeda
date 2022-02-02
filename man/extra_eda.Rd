@@ -2,26 +2,26 @@
 % Please edit documentation in R/extra_eda.R
 \name{extra_eda}
 \alias{extra_eda}
-\title{A conglomeration of univariate and bivariate EDA visualizations}
+\title{Univariate and associated bivariate EDA visualizations}
 \usage{
-extra_eda(
-  x,
-  include_univariate = TRUE,
-  bivariate_categorical_target = NULL,
-  bivariate_continuous_target = NULL
-)
+extra_eda(df, eda_column, condition_column = NULL, discrete_cutoff = 10)
 }
 \arguments{
-\item{x}{a dataframe}
+\item{df}{a dataframe}
 
-\item{include_univariate}{logical}
+\item{eda_column}{character name of the column upon which the extra
+exploratory data analysis will be performed}
 
-\item{bivariate_categorical_target}{logical}
+\item{condition_column}{character name of the column used for conditional
+analysis}
 
-\item{bivariate_continuous_target}{logical}
+\item{discrete_cutoff}{numerical if the \code{eda_column} has less than
+\code{discrete_cutoff} distinct levels, the \code{eda_column} will be
+treated like a factor.}
 }
 \value{
-returns html containing css, summaries, and graphs for included analysis.
+returns html containing css, summaries, and graphs for included
+analysis.
 }
 \description{
 The function has several side-effects including the creation of one or more
@@ -29,5 +29,5 @@ plots in a temporary folder. The function is intended to be run from within a
 R Markdown of flexdashboad document in a code chunk with results="asis"
 }
 \examples{
-# conglomerate_eda(eeda::eeda_test_data["eg_continuous"])
+# extra_eda(df = eeda::eeda_test_data, eda_column = "eg_continuous")
 }

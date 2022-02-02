@@ -2,4 +2,7 @@
 
 export("%>%")
 export(extra_eda)
+export(plot_conditional_distribution)
+import(dplyr)
+import(ggplot2)
 importFrom(magrittr,"%>%")

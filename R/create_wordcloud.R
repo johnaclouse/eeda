@@ -1,16 +1,14 @@
 create_wordcloud <-
   function(x,
            word_count = 125,
-           width = 647 / 72,
-           height = 400 / 72,
-           dpi = 72) {
+           width = 600,
+           height = 450) {
 
     # binding variable just to keep R CMD Check from seeing NSE as global variables
     n <- NULL
 
     # word cloud gets stuck when there are only unique values
     if (sum(duplicated(x)) > 1) {
-
       top_words <- tidyr::as_tibble(table(x)) %>%
         dplyr::filter(x != "") %>%
         dplyr::mutate(x = stringr::str_trunc(x, 30)) %>%
@@ -26,24 +24,23 @@ create_wordcloud <-
             color = factor(n)
           ),
           rm_outside = TRUE,
-          #max_steps = 1,
+          # max_steps = 1,
           # grid_size = 1,
-          eccentricity = 0.9
+          eccentricity = 0.75
         ) +
-        # ggplot2::scale_radius(range = c(2, 18), limits = c(0, NA)) +
         ggplot2::scale_size_area(max_size = 14) +
         ggplot2::scale_color_viridis_d(option = "H", direction = -1) +
         ggplot2::theme_minimal()
 
       png_file <- tempfile(fileext = ".png")
-      ggplot2::ggsave(
-        filename = png_file,
-        dev = "png",
-        plot = word_cloud,
+      # Note: ggsave was creating an error in grid.Call so switched to png
+      grDevices::png(
+        png_file,
         width = width,
-        height = height ,
-        dpi = dpi
-      )
+        height = height)
+      print(word_cloud)
+      grDevices::dev.off()
+
       # crop ggplot2::ggplot2 image saved as png
       knitr::plot_crop(png_file)
     } else {
@@ -51,5 +48,3 @@ create_wordcloud <-
     }
     return(png_file)
   }
-
-
