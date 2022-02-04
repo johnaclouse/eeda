@@ -21,6 +21,7 @@ Imports:
     forcats,
     ggplot2,
     ggrastr,
+    ggridges,
     ggwordcloud,
     glue,
     grDevices,

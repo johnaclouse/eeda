@@ -8,6 +8,9 @@
 #'   exploratory data analysis will be performed
 #' @param condition_column character name of the column used for conditional
 #'   analysis
+#' @param reference_column a numeric continuous valued vector to be plotted as
+#'   x-axis reference for comparison of \code{eda_column} by
+#'   \code{condition_column}
 #' @param discrete_cutoff numerical if the \code{eda_column} has less than
 #'   \code{discrete_cutoff} distinct levels, the \code{eda_column} will be
 #'   treated like a factor.
@@ -21,6 +24,7 @@
 extra_eda <- function(df,
                       eda_column,
                       condition_column = NULL,
+                      reference_column = NULL,
                       discrete_cutoff = 10) {
   add_eeda_style()
 
@@ -48,24 +52,24 @@ extra_eda <- function(df,
   # bivariate table ----
   if (!is.null(condition_column)) {
     cat("\n### {data-height=475}\n\n")
-    # cat("\n\n####", eda_column, "~", condition_column, "\n\n")
-    cat("**", eda_column, "~", condition_column, "**\n\n")
+    cat("**", condition_column, " ~ ", condition_column, "**\n\n", sep = "")
+
     cat("<table>\n<tr>\n")
 
     if (is.factor(df[[eda_column]])) {
-      render_bi_factor(df, eda_column, condition_column)
+      render_bi_factor(df, eda_column, condition_column, reference_column)
     }
 
 
     if (is.logical(df[[eda_column]])) {
       df[[eda_column]] <- factor(df[[eda_column]])
-      render_bi_factor(df, eda_column, condition_column)
+      render_bi_factor(df, eda_column, condition_column, reference_column)
     }
 
     if (is.numeric(df[[eda_column]])) {
       if (is_discrete(df[[eda_column]], cutoff = discrete_cutoff)) {
         df[[eda_column]] <- factor(df[[eda_column]])
-        render_bi_factor(df, eda_column, condition_column)
+        render_bi_factor(df, eda_column, condition_column, reference_column)
       } else {
         render_bi_continuous(df, eda_column, condition_column)
       }
@@ -202,7 +206,7 @@ render_bi_continuous <- function(df, eda_column, condition_column) {
 }
 
 
-render_bi_factor <- function(df, eda_column, condition_column) {
+render_bi_factor <- function(df, eda_column, condition_column, reference_column) {
   cat("<td style='vertical-align: text-top;'>\n")
   dlookr::relate(dlookr::target_by(df, condition_column), eda_column) %>%
     t() %>%
@@ -219,7 +223,35 @@ render_bi_factor <- function(df, eda_column, condition_column) {
   }
   cat("</td>\n")
 
-  # cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
-  # cat(unlist(create_freq_table(df, eda_column)))
-  # cat("</td>\n")
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+  conditional_distribution_by_category_plot <-
+    plot_conditional_distribution_by_category(df, eda_column, condition_column, reference_column)
+  if (conditional_distribution_by_category_plot != "") {
+    cat("<img src='", conditional_distribution_by_category_plot, "'>", sep = "")
+  } else {
+    cat("Plot not available")
+  }
+  cat("</td>\n")
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+  conditional_distribution_by_category_plot <-
+    plot_conditional_distribution_by_category(df, eda_column, condition_column, reference_column)
+  if (conditional_distribution_by_category_plot != "") {
+    cat("<img src='", conditional_distribution_by_category_plot, "'>", sep = "")
+  } else {
+    cat("Plot not available")
+  }
+  cat("</td>\n")
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+  conditional_distribution_by_category_plot <-
+    plot_conditional_distribution_by_category(df, eda_column, condition_column, reference_column)
+  if (conditional_distribution_by_category_plot != "") {
+    cat("<img src='", conditional_distribution_by_category_plot, "'>", sep = "")
+  } else {
+    cat("Plot not available")
+  }
+  cat("</td>\n")
 }
+
+
+##### ADD PLOT WITH REFERENCE_COLUMN = monetary
+

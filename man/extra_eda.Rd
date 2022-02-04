@@ -4,7 +4,13 @@
 \alias{extra_eda}
 \title{Univariate and associated bivariate EDA visualizations}
 \usage{
-extra_eda(df, eda_column, condition_column = NULL, discrete_cutoff = 10)
+extra_eda(
+  df,
+  eda_column,
+  condition_column = NULL,
+  reference_column = NULL,
+  discrete_cutoff = 10
+)
 }
 \arguments{
 \item{df}{a dataframe}
@@ -14,6 +20,10 @@ exploratory data analysis will be performed}
 
 \item{condition_column}{character name of the column used for conditional
 analysis}
+
+\item{reference_column}{a numeric continuous valued vector to be plotted as
+x-axis reference for comparison of \code{eda_column} by
+\code{condition_column}}
 
 \item{discrete_cutoff}{numerical if the \code{eda_column} has less than
 \code{discrete_cutoff} distinct levels, the \code{eda_column} will be

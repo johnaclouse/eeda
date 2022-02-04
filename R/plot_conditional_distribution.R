@@ -48,7 +48,7 @@ plot_conditional_distribution <- function(df,
       "positive no significant difference" = "#FFC0C0"
     )
 
-# categorical distribution ----
+  # categorical distribution ----
   if (is.factor(df[[eda_column]])) {
 
     columns <- c(eda_column, condition_column)
@@ -132,7 +132,7 @@ plot_conditional_distribution <- function(df,
                       x_mid)
 
     plot_output <-
-    ggplot(plot_data) +
+      ggplot(plot_data) +
       geom_rect(
         aes(
           xmin = x_min,
@@ -179,7 +179,7 @@ plot_conditional_distribution <- function(df,
     # compose table visually as a tribble with empty rows and columns
   }
 
-# continuous distribution ----
+  # continuous distribution ----
   if (is.numeric(df[[eda_column]])) {
     bs_median <- function(x, i) {
       stats::median(x[i])
