@@ -24,6 +24,7 @@ Imports:
     ggridges,
     ggwordcloud,
     glue,
+    graphics,
     grDevices,
     grid,
     kableExtra,

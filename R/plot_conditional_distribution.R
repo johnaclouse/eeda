@@ -1,9 +1,9 @@
 #' Plot conditional distribution
 #'
-#' A visualization showing values from the \code{eda_column} separated in two
-#' sets based on the \code{condition_column}. A histogram format chosen to
+#' A visualization showing values from the \code{eda_var} separated in two
+#' sets based on the \code{condition_var}. A histogram format chosen to
 #' accommodate discontinuities in data. The number of bins is determined based
-#' on the data in \code{eda_column}.   Conditional views of histograms will
+#' on the data in \code{eda_var}.   Conditional views of histograms will
 #' involve different binwidths. This compromise was made in recognition of the
 #' need to see a more accurate view of the distribuion rather than attempt to
 #' compare counts at a given position on the x-axis. The default
@@ -11,23 +11,21 @@
 #' search. A more supportable value should be considered based on the data.
 #'
 #' @param df data frame
-#' @param eda_column character
-#' @param condition_column character name of column for conditional analysis
+#' @param eda_var character
+#' @param condition_var character name of column for conditional analysis
 #' @param confidence_level numeric confidence level
 #' @param width numeric width of plot in pixels
 #' @param height numeric height of plot in pixels
 #'
 #' @return NULL. Function called for side effect of rendering exploratory data
 #'   anlysis visualization
-#' @import dplyr
-#' @import ggplot2
 #' @export
 #'
 #' @examples
 #' # plot_conditional_distribution()
 plot_conditional_distribution <- function(df,
-                                          eda_column = NULL,
-                                          condition_column = NULL,
+                                          eda_var = NULL,
+                                          condition_var = NULL,
                                           confidence_level = 0.99,
                                           width = 600,
                                           height = 450) {
@@ -36,7 +34,7 @@ plot_conditional_distribution <- function(df,
   CI_low <- CI_high <- outliers <- r_rank_biserial <- CI <- CI_Upper <- CI_Lower <- NULL
   n_events <- condition <- condition_value <- BS_Median <- NULL
   rowname <- negative <- positive <- observations_per_feature_level <- NULL
-  x_mid <- x_min <- x_max <- y_min <- y_max <- NULL
+  n <- x_mid <- x_min <- x_max <- y_min <- y_max <- NULL
 
   png_file <- ""
 
@@ -49,9 +47,9 @@ plot_conditional_distribution <- function(df,
     )
 
   # categorical distribution ----
-  if (is.factor(df[[eda_column]])) {
+  if (is.factor(df[[eda_var]])) {
 
-    columns <- c(eda_column, condition_column)
+    columns <- c(eda_var, condition_var)
 
     plot_data <-
       df %>%
@@ -62,7 +60,7 @@ plot_conditional_distribution <- function(df,
       dplyr::rename(feature = rowname,
                     negative = negative,
                     positive = positive) %>%
-      dplyr::arrange(desc(feature)) %>%
+      dplyr::arrange(dplyr::desc(feature)) %>%
       dplyr::mutate(observations_per_feature_level = negative + positive)
 
 
@@ -79,12 +77,12 @@ plot_conditional_distribution <- function(df,
       tidyr::pivot_longer(cols = c(negative, positive),
                           names_to = "condition_value") %>%
       dplyr::mutate(
-        y_min = if_else(
+        y_min = dplyr::if_else(
           condition_value == "negative",
           0,
           1 - (value / observations_per_feature_level)
         ),
-        y_max = if_else(
+        y_max = dplyr::if_else(
           condition_value == "negative",
           value / observations_per_feature_level,
           1
@@ -94,8 +92,8 @@ plot_conditional_distribution <- function(df,
 
     log_likelihood_ratio <-
       table(
-        df[[eda_column]],
-        dplyr::if_else(df[condition_column] == "positive", 1, 0)
+        df[[eda_var]],
+        dplyr::if_else(df[condition_var] == "positive", 1, 0)
       ) %>%
       DescTools::GTest()
 
@@ -132,9 +130,9 @@ plot_conditional_distribution <- function(df,
                       x_mid)
 
     plot_output <-
-      ggplot(plot_data) +
-      geom_rect(
-        aes(
+      ggplot2::ggplot(plot_data) +
+      ggplot2::geom_rect(
+        ggplot2::aes(
           xmin = x_min,
           xmax = x_max,
           ymin = y_min,
@@ -143,21 +141,21 @@ plot_conditional_distribution <- function(df,
         ),
         color = NA
       ) +
-      scale_fill_manual(values = plot_colors) +
-      scale_x_continuous(breaks = x_axis_labels$x_mid,
+      ggplot2::scale_fill_manual(values = plot_colors) +
+      ggplot2::scale_x_continuous(breaks = x_axis_labels$x_mid,
                          labels = x_axis_labels$feature,
                          expand = c(0, 0)) +
-      scale_y_continuous(expand = c(0, 0)) +
+      ggplot2::scale_y_continuous(expand = c(0, 0)) +
       ggplot2::coord_flip() +
-      theme_minimal() +
-      theme(axis.text.x = element_text(
+      ggplot2::theme_minimal() +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(
         size = 8,
         colour = "black",
         angle = 90,
         hjust = 0,
         vjust = 0.5
       ),
-      axis.text.y = element_text(
+      axis.text.y = ggplot2::element_text(
         size = 8,
         colour = "black",
         hjust = 1,
@@ -173,14 +171,10 @@ plot_conditional_distribution <- function(df,
     )
     print(plot_output)
     grDevices::dev.off()
-
-    # NEED to show the x axis values on bottom histogram here.  See the numeric distribution plot from uni
-    # USe flextable for table formatting and replace html css nightmare in unique
-    # compose table visually as a tribble with empty rows and columns
   }
 
   # continuous distribution ----
-  if (is.numeric(df[[eda_column]])) {
+  if (is.numeric(df[[eda_var]])) {
     bs_median <- function(x, i) {
       stats::median(x[i])
     }
@@ -211,14 +205,14 @@ plot_conditional_distribution <- function(df,
 
     long_data <-
       df %>%
-      dplyr::select(tidyselect::any_of(c(condition_column, eda_column))) %>%
+      dplyr::select(tidyselect::any_of(c(condition_var, eda_var))) %>%
       tidyr::pivot_longer(
         values_to = "value",
         names_to = "feature",
-        cols = -tidyselect::all_of(condition_column)
+        cols = -tidyselect::all_of(condition_var)
       ) %>%
       dplyr::select(
-        condition = tidyselect::all_of(condition_column),
+        condition = tidyselect::all_of(condition_var),
         feature,
         value
       ) %>%
@@ -395,7 +389,7 @@ plot_conditional_distribution <- function(df,
       ggplot2::scale_fill_manual(values = plot_colors) +
       ggplot2::labs(
         title = glue::glue(
-          "{caption_data$feature} ~ {condition_column} (positive or negative)
+          "{caption_data$feature} ~ {condition_var} (positive or negative)
         Density plot with median confidence intervals and outliers by target state"
         ),
         caption = glue::glue("n = {scales::comma(caption_data$n)}   \\

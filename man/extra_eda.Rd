@@ -6,27 +6,27 @@
 \usage{
 extra_eda(
   df,
-  eda_column,
-  condition_column = NULL,
-  reference_column = NULL,
+  eda_var,
+  condition_var = NULL,
+  reference_var = NULL,
   discrete_cutoff = 10
 )
 }
 \arguments{
 \item{df}{a dataframe}
 
-\item{eda_column}{character name of the column upon which the extra
+\item{eda_var}{character name of the column upon which the extra
 exploratory data analysis will be performed}
 
-\item{condition_column}{character name of the column used for conditional
+\item{condition_var}{character name of the column used for conditional
 analysis}
 
-\item{reference_column}{a numeric continuous valued vector to be plotted as
-x-axis reference for comparison of \code{eda_column} by
-\code{condition_column}}
+\item{reference_var}{a numeric continuous valued vector to be plotted as
+x-axis reference for comparison of \code{eda_var} by
+\code{condition_var}}
 
-\item{discrete_cutoff}{numerical if the \code{eda_column} has less than
-\code{discrete_cutoff} distinct levels, the \code{eda_column} will be
+\item{discrete_cutoff}{numerical if the \code{eda_var} has less than
+\code{discrete_cutoff} distinct levels, the \code{eda_var} will be
 treated like a factor.}
 }
 \value{
@@ -39,5 +39,5 @@ plots in a temporary folder. The function is intended to be run from within a
 R Markdown of flexdashboad document in a code chunk with results="asis"
 }
 \examples{
-# extra_eda(df = eeda::eeda_test_data, eda_column = "eg_continuous")
+# extra_eda(df = eeda::eeda_test_data, eda_var = "eg_continuous")
 }

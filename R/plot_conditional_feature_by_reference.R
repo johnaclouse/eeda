@@ -1,4 +1,4 @@
-#' plot_conditional_distribution_by_category
+#' plot_conditional_feature_by_reference
 #'
 #' @param df data frame
 #' @param eda_var character
@@ -12,12 +12,11 @@
 #' @export
 #'
 #' @examples
-#' # plot_conditional_distribution_by_category(df = eeda::eeda_test_data[1:2000,],
-#' #                                          eda_var = names(eeda::eeda_test_data)[24],
-#'  #                                          eda_var = names(eeda::eeda_test_data)[8],
+#' # plot_conditional_distribution_by_category(df = eeda::eeda_test_data[1:200,],
+#' #                                          eda_var = names(eeda::eeda_test_data)[5],
 #' #                                          condition_var = "target",
 #' #                                          reference_var = "key_age")
-plot_conditional_distribution_by_category <- function(df,
+plot_conditional_feature_by_reference <- function(df,
                                                       eda_var,
                                                       condition_var,
                                                       reference_var,
@@ -32,31 +31,20 @@ plot_conditional_distribution_by_category <- function(df,
     df %>%
     dplyr::select(tidyselect::any_of(columns))
 
-  if (is.numeric(plot_data[[eda_var]])) {
-    if (length(unique(plot_data[[eda_var]])) > 25)
-      stop(glue::glue("in plot_conditional_distribution_by_category: \\
-                        too many unique values in {eda_var} to plot as a factor.
-                        {length(unique(plot_data[[eda_var]]))} unique values found, but only 25 are allowed."))
-    plot_data[[eda_var]] <- factor(plot_data[[eda_var]],
-                                   exclude = NULL,
-                                   levels = sort(unique(plot_data[[eda_var]]), na.last = TRUE))
-  }
-
   plot_output <-
-    plot_data %>%
     ggplot2::ggplot(
+      plot_data,
       ggplot2::aes_string(
         x = reference_var,
         y = eda_var,
+        color = condition_var,
         fill = condition_var
       )
     ) +
-  ggridges::geom_density_ridges(
-    scale = 1,
-    alpha = 0.6
-  ) +
+    ggplot2::geom_point() +
+    ggplot2::geom_smooth() +
+    ggplot2::scale_color_manual(values = c("red", "black")) +
     ggplot2::scale_fill_manual(values = c("red", "black")) +
-    ggplot2::labs(x = reference_var, y = eda_var) +
     ggplot2::theme_minimal()
 
   png_file <- tempfile(fileext = ".png")

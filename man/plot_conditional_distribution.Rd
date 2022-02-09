@@ -6,8 +6,8 @@
 \usage{
 plot_conditional_distribution(
   df,
-  eda_column = NULL,
-  condition_column = NULL,
+  eda_var = NULL,
+  condition_var = NULL,
   confidence_level = 0.99,
   width = 600,
   height = 450
@@ -16,9 +16,9 @@ plot_conditional_distribution(
 \arguments{
 \item{df}{data frame}
 
-\item{eda_column}{character}
+\item{eda_var}{character}
 
-\item{condition_column}{character name of column for conditional analysis}
+\item{condition_var}{character name of column for conditional analysis}
 
 \item{confidence_level}{numeric confidence level}
 
@@ -31,10 +31,10 @@ NULL. Function called for side effect of rendering exploratory data
 anlysis visualization
 }
 \description{
-A visualization showing values from the \code{eda_column} separated in two
-sets based on the \code{condition_column}. A histogram format chosen to
+A visualization showing values from the \code{eda_var} separated in two
+sets based on the \code{condition_var}. A histogram format chosen to
 accommodate discontinuities in data. The number of bins is determined based
-on the data in \code{eda_column}.   Conditional views of histograms will
+on the data in \code{eda_var}.   Conditional views of histograms will
 involve different binwidths. This compromise was made in recognition of the
 need to see a more accurate view of the distribuion rather than attempt to
 compare counts at a given position on the x-axis. The default
