@@ -36,4 +36,16 @@
   <url>
     <loc>/reference/plot_conditional_distribution.html</loc>
   </url>
+  <url>
+    <loc>/reference/plot_conditional_distribution_by_category.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_conditional_feature_by_reference.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scale_min_max.html</loc>
+  </url>
+  <url>
+    <loc>/reference/suggest_number_of_clusters.html</loc>
+  </url>
 </urlset>
