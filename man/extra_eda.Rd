@@ -7,7 +7,7 @@
 extra_eda(
   df,
   eda_var,
-  condition_var = NULL,
+  target_var = NULL,
   reference_var = NULL,
   discrete_cutoff = 10
 )
@@ -18,12 +18,12 @@ extra_eda(
 \item{eda_var}{character name of the column upon which the extra
 exploratory data analysis will be performed}
 
-\item{condition_var}{character name of the column used for conditional
+\item{target_var}{character name of the column used for conditional
 analysis}
 
 \item{reference_var}{a numeric continuous valued vector to be plotted as
 x-axis reference for comparison of \code{eda_var} by
-\code{condition_var}}
+\code{target_var}}
 
 \item{discrete_cutoff}{numerical if the \code{eda_var} has less than
 \code{discrete_cutoff} distinct levels, the \code{eda_var} will be

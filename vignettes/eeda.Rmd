@@ -1,8 +1,10 @@
 ---
 title: "eeda"
 output:
-  rmarkdown::html_vignette:
-    css: eeda-vignette.css
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: scroll
+    source_code: embed
 vignette: >
   %\VignetteIndexEntry{eeda}
   %\VignetteEngine{knitr::rmarkdown}
@@ -10,6 +12,10 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
+# output:
+#   rmarkdown::html_vignette:
+#     css: eeda-vignette.css
+library(flexdashboard)
 library(eeda)
 ```
 

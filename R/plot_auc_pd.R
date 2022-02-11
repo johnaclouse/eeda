@@ -44,7 +44,7 @@ plot_auc_pd <- function(df,
   test_roc <- pROC::roc(
     response = factor(testing_data[[target_var]], ordered = TRUE),
     predictor = factor(
-      predict(cforest_fit,
+      stats::predict(cforest_fit,
               newdata = testing_data[eda_var]),
       ordered = TRUE)
   )

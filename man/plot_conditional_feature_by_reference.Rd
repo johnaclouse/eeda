@@ -7,9 +7,9 @@
 plot_conditional_feature_by_reference(
   df,
   eda_var,
-  condition_var,
+  target_var,
   reference_var,
-  width = 450,
+  width = 225,
   height = 450
 )
 }
@@ -18,7 +18,7 @@ plot_conditional_feature_by_reference(
 
 \item{eda_var}{character}
 
-\item{condition_var}{character name of column for conditional analysis}
+\item{target_var}{character name of column for conditional analysis}
 
 \item{reference_var}{character vector with the names of reference columns for conditional plotting}
 
@@ -36,6 +36,6 @@ plot_conditional_feature_by_reference
 \examples{
 # plot_conditional_distribution_by_category(df = eeda::eeda_test_data[1:200,],
 #                                          eda_var = names(eeda::eeda_test_data)[5],
-#                                          condition_var = "target",
+#                                          target_var = "target",
 #                                          reference_var = "key_age")
 }

@@ -7,9 +7,9 @@
 plot_conditional_distribution(
   df,
   eda_var = NULL,
-  condition_var = NULL,
+  target_var = NULL,
   confidence_level = 0.99,
-  width = 600,
+  width = 300,
   height = 450
 )
 }
@@ -18,7 +18,7 @@ plot_conditional_distribution(
 
 \item{eda_var}{character}
 
-\item{condition_var}{character name of column for conditional analysis}
+\item{target_var}{character name of column for conditional analysis}
 
 \item{confidence_level}{numeric confidence level}
 
@@ -32,7 +32,7 @@ anlysis visualization
 }
 \description{
 A visualization showing values from the \code{eda_var} separated in two
-sets based on the \code{condition_var}. A histogram format chosen to
+sets based on the \code{target_var}. A histogram format chosen to
 accommodate discontinuities in data. The number of bins is determined based
 on the data in \code{eda_var}.   Conditional views of histograms will
 involve different binwidths. This compromise was made in recognition of the

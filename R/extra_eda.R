@@ -174,6 +174,7 @@ render_uni_discrete <- function(df, eda_var) {
 
 
 render_bi_factor <- function(df, eda_var, target_var, reference_var) {
+  n <- NULL
   cat("<td style='vertical-align: text-top;'>\n")
   cat("**", eda_var, " ~ ", target_var, "**\n\n", sep = "")
   df %>%
@@ -242,7 +243,7 @@ render_bi_continuous <- function(df, eda_var, target_var, reference_var) {
       na,
       p00,
       mean,
-      median = p50,
+      p50,
       p90,
       p95,
       p100
@@ -252,7 +253,7 @@ render_bi_continuous <- function(df, eda_var, target_var, reference_var) {
       na = curios::alignx_n(na),
       p00 = curios::alignx_n(curios::roundx_n(p00)),
       mean = curios::alignx_n(curios::roundx_n(mean)),
-      median = curios::alignx_n(curios::roundx_n(median)),
+      median = curios::alignx_n(curios::roundx_n(p50)),
       p90 = curios::alignx_n(curios::roundx_n(p90)),
       p95 = curios::alignx_n(curios::roundx_n(p95)),
       p100 = curios::alignx_n(curios::roundx_n(p100))
