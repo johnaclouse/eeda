@@ -9,7 +9,7 @@ plot_conditional_distribution_by_category(
   eda_var,
   condition_var,
   reference_var,
-  width = 600,
+  width = 450,
   height = 450
 )
 }

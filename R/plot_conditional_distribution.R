@@ -1,7 +1,7 @@
 #' Plot conditional distribution
 #'
 #' A visualization showing values from the \code{eda_var} separated in two
-#' sets based on the \code{condition_var}. A histogram format chosen to
+#' sets based on the \code{target_var}. A histogram format chosen to
 #' accommodate discontinuities in data. The number of bins is determined based
 #' on the data in \code{eda_var}.   Conditional views of histograms will
 #' involve different binwidths. This compromise was made in recognition of the
@@ -12,7 +12,7 @@
 #'
 #' @param df data frame
 #' @param eda_var character
-#' @param condition_var character name of column for conditional analysis
+#' @param target_var character name of column for conditional analysis
 #' @param confidence_level numeric confidence level
 #' @param width numeric width of plot in pixels
 #' @param height numeric height of plot in pixels
@@ -25,9 +25,9 @@
 #' # plot_conditional_distribution()
 plot_conditional_distribution <- function(df,
                                           eda_var = NULL,
-                                          condition_var = NULL,
+                                          target_var = NULL,
                                           confidence_level = 0.99,
-                                          width = 600,
+                                          width = 300,
                                           height = 450) {
   # binding variable just to keep R CMD Check from seeing NSE as global variables
   feature <- value <- data <- results <- bootstrap <- .data <- densities <- NULL
@@ -49,7 +49,7 @@ plot_conditional_distribution <- function(df,
   # categorical distribution ----
   if (is.factor(df[[eda_var]])) {
 
-    columns <- c(eda_var, condition_var)
+    columns <- c(eda_var, target_var)
 
     plot_data <-
       df %>%
@@ -93,7 +93,7 @@ plot_conditional_distribution <- function(df,
     log_likelihood_ratio <-
       table(
         df[[eda_var]],
-        dplyr::if_else(df[condition_var] == "positive", 1, 0)
+        dplyr::if_else(df[target_var] == "positive", 1, 0)
       ) %>%
       DescTools::GTest()
 
@@ -143,25 +143,27 @@ plot_conditional_distribution <- function(df,
       ) +
       ggplot2::scale_fill_manual(values = plot_colors) +
       ggplot2::scale_x_continuous(breaks = x_axis_labels$x_mid,
-                         labels = x_axis_labels$feature,
-                         expand = c(0, 0)) +
+                                  labels = x_axis_labels$feature,
+                                  expand = c(0, 0)) +
       ggplot2::scale_y_continuous(expand = c(0, 0)) +
       ggplot2::coord_flip() +
       ggplot2::theme_minimal() +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(
-        size = 8,
-        colour = "black",
-        angle = 90,
-        hjust = 0,
-        vjust = 0.5
-      ),
-      axis.text.y = ggplot2::element_text(
-        size = 8,
-        colour = "black",
-        hjust = 1,
-        vjust = 0.3
-      ))
-
+      ggplot2::theme(
+        legend.position = "bottom",
+        axis.text.x = ggplot2::element_text(
+          size = 8,
+          colour = "black",
+          angle = 90,
+          hjust = 0,
+          vjust = 0.5
+        ),
+        axis.text.y = ggplot2::element_text(
+          size = 8,
+          colour = "black",
+          hjust = 1,
+          vjust = 0.3
+        )) +
+      ggplot2::guides(fill = ggplot2::guide_legend(nrow = 4))
 
     png_file <- tempfile(fileext = ".png")
     grDevices::png(
@@ -205,14 +207,14 @@ plot_conditional_distribution <- function(df,
 
     long_data <-
       df %>%
-      dplyr::select(tidyselect::any_of(c(condition_var, eda_var))) %>%
+      dplyr::select(tidyselect::any_of(c(target_var, eda_var))) %>%
       tidyr::pivot_longer(
         values_to = "value",
         names_to = "feature",
-        cols = -tidyselect::all_of(condition_var)
+        cols = -tidyselect::all_of(target_var)
       ) %>%
       dplyr::select(
-        condition = tidyselect::all_of(condition_var),
+        condition = tidyselect::all_of(target_var),
         feature,
         value
       ) %>%
@@ -389,11 +391,11 @@ plot_conditional_distribution <- function(df,
       ggplot2::scale_fill_manual(values = plot_colors) +
       ggplot2::labs(
         title = glue::glue(
-          "{caption_data$feature} ~ {condition_var} (positive or negative)
-        Density plot with median confidence intervals and outliers by target state"
+          "{caption_data$feature} ~ {target_var}
+        Median, CI, and outliers"
         ),
-        caption = glue::glue("n = {scales::comma(caption_data$n)}   \\
-                           effect size (r_rank_biserial) = {caption_data$r_rank_biserial}  \\
+        caption = glue::glue("n = {scales::comma(caption_data$n)}
+                           effect size (r_rank_biserial) = {caption_data$r_rank_biserial}
                            {scales::percent(caption_data$CI)} CI \\
                            [{caption_data$CI_low}, {caption_data$CI_high}]"),
         x = NULL,
@@ -414,7 +416,8 @@ plot_conditional_distribution <- function(df,
         strip.text.x = ggplot2::element_blank(),
         # axis.text.y = ggplot2::element_blank(),
         axis.ticks.y = ggplot2::element_blank()
-      )
+      ) +
+      ggplot2::guides(fill = ggplot2::guide_legend(nrow = 4))
 
     png_file <- tempfile(fileext = ".png")
     grDevices::png(

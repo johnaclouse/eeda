@@ -2,6 +2,7 @@
 
 export("%>%")
 export(extra_eda)
+export(plot_auc_pd)
 export(plot_conditional_distribution)
 export(plot_conditional_distribution_by_category)
 export(plot_conditional_feature_by_reference)

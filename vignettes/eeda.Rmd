@@ -1,0 +1,48 @@
+---
+title: "eeda"
+output:
+  rmarkdown::html_vignette:
+    css: eeda-vignette.css
+vignette: >
+  %\VignetteIndexEntry{eeda}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(eeda)
+```
+
+# Univariate
+
+```{r results="asis"}
+# foo = function(df, eda_column){
+#   cat(sum(is.na(df[eda_column])), eda_column, "\n")
+# }
+# foo(eeda_test_data[1:200,], eda_column = "bar")
+# names(eeda_test_data) %>%
+#   furrr::future_walk(~ foo(eeda_test_data[1:200,], eda_column = .x))
+
+# eeda::extra_eda(df = eeda::eeda_test_data[1:200,], eda_column = "eg_factor_50")
+
+# names(eeda_test_data) %>%
+#   furrr::future_walk(~ eeda::extra_eda(eeda_test_data[1:200,], eda_column = .x),
+#                      seed = NULL)
+```
+
+# Bivariate
+
+```{r results="asis"}
+target_var <- "target"
+reference_var <- c("key_age", "key_recency", "key_frequency", "key_monetary")
+
+names(eeda_test_data %>%
+  dplyr::select(-tidyselect::any_of(c(target_var, "key_age"))))[1:18] %>%
+  furrr::future_walk(~ eeda::extra_eda(eeda_test_data[1:200, ],
+    eda_var = .x,
+    target_var = target_var,
+    reference_var = reference_var
+  ),
+  .options = furrr::furrr_options(seed = NULL)
+  )
+```

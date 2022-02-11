@@ -1,0 +1,50 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(eeda)
+```
+
+```{r result="asis"}
+dlookr::relate(dlookr::target_by(eeda::eeda_test_data, "target"), "eg_continuous") %>%
+    dplyr::select(
+      target,
+      n,
+      na,
+      p00,
+      mean,
+      median = p50,
+      p90,
+      p95,
+      p100
+    ) %>%
+    dplyr::mutate(
+      n = curios::alignx_n(n),
+      na = curios::alignx_n(na),
+      p00 = curios::alignx_n(curios::roundx_n(p00)),
+      mean = curios::alignx_n(curios::roundx_n(mean)),
+      median = curios::alignx_n(curios::roundx_n(median)),
+      p90 = curios::alignx_n(curios::roundx_n(p90)),
+      p95 = curios::alignx_n(curios::roundx_n(p95)),
+      p100 = curios::alignx_n(curios::roundx_n(p100))
+    ) %>%
+    t() %>%
+  .[-1,] %>% 
+#     as.data.frame() %>% 
+# tibble::rownames_to_column() %>% 
+   # dplyr::slice(-1) %>% 
+    knitr::kable(
+      col.names = c("&emsp; negative", "&emsp;&emsp; positive", "&emsp;&emsp;&emsp; total &emsp;"),
+      format = "html",
+      escape = F,
+      align = "r") %>%
+    print()
+
+```
+

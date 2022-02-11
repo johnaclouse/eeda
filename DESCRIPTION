@@ -17,6 +17,7 @@ Imports:
     DescTools,
     dlookr,
     dplyr,
+    edarf,
     effectsize,
     forcats,
     ggplot2,
@@ -30,6 +31,7 @@ Imports:
     kableExtra,
     knitr,
     magrittr,
+    party,
     purrr,
     scales,
     stats,
@@ -42,3 +44,6 @@ BugReports: https://github.com/johnaclouse/eeda/issues
 Depends: 
     R (>= 2.10)
 LazyData: true
+VignetteBuilder: knitr
+Suggests: 
+    rmarkdown

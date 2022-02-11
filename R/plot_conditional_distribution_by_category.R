@@ -2,7 +2,7 @@
 #'
 #' @param df data frame
 #' @param eda_var character
-#' @param condition_var character name of column for conditional analysis
+#' @param target_var character name of column for conditional analysis
 #' @param reference_var character vector with the names of reference columns for conditional plotting
 #' @param width numeric width of plot in pixels
 #' @param height numeric height of plot in pixels
@@ -15,18 +15,18 @@
 #' # plot_conditional_distribution_by_category(df = eeda::eeda_test_data[1:2000,],
 #' #                                          eda_var = names(eeda::eeda_test_data)[24],
 #'  #                                          eda_var = names(eeda::eeda_test_data)[8],
-#' #                                          condition_var = "target",
+#' #                                          target_var = "target",
 #' #                                          reference_var = "key_age")
 plot_conditional_distribution_by_category <- function(df,
                                                       eda_var,
-                                                      condition_var,
+                                                      target_var,
                                                       reference_var,
-                                                      width = 600,
+                                                      width = 250,
                                                       height = 450) {
   cluster <- value <- feature_level <- target_level <- reference <- NULL
 
   png_file <- ""
-  columns <- c(eda_var, condition_var, reference_var)
+  columns <- c(eda_var, target_var, reference_var)
 
   plot_data <-
     df %>%
@@ -48,7 +48,7 @@ plot_conditional_distribution_by_category <- function(df,
       ggplot2::aes_string(
         x = reference_var,
         y = eda_var,
-        fill = condition_var
+        fill = target_var
       )
     ) +
   ggridges::geom_density_ridges(
@@ -57,7 +57,9 @@ plot_conditional_distribution_by_category <- function(df,
   ) +
     ggplot2::scale_fill_manual(values = c("red", "black")) +
     ggplot2::labs(x = reference_var, y = eda_var) +
-    ggplot2::theme_minimal()
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "bottom")
+
 
   png_file <- tempfile(fileext = ".png")
   grDevices::png(
