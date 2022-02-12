@@ -1,5 +1,5 @@
 ---
-title: "eeda"
+title: "eeda demonstration dashboard"
 output:
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -12,12 +12,23 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-# output:
-#   rmarkdown::html_vignette:
-#     css: eeda-vignette.css
 library(flexdashboard)
 library(eeda)
 ```
+
+<style>
+/* Adjust ### headers created in flexdashboard */
+    .chart-title {
+    /* border-bottom: 1px solid #d7d7d7; */
+    border-bottom: none;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    padding: 7px 0px 0px 7px;
+    margin-top: 60px; /* fixes relative link landing on page and hiding heading*/
+    }
+</style>
 
 # Univariate
 

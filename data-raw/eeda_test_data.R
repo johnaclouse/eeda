@@ -107,7 +107,7 @@ eeda_test_data <- eeda_test_data %>%
   dplyr::mutate(
     # create association between eg_factor_4 and target and between eg_factor_4 and key_age
     eg_factor_4 = factor(ifelse(target == "positive" & key_age > 40, "dragon", as.character(eg_factor_4))),
-
+    target = factor(ifelse(eg_factor_4 == "dog", "negative", as.character(target))),
     # create association between eg_continous and key_age
     eg_continuous = runif(n_rows) * 100 + 10 * pmin(key_age, 45)^.53,
 

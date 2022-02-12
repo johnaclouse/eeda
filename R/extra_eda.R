@@ -30,15 +30,19 @@ extra_eda <- function(df,
 
   message("Processing extra EDA for: ", eda_var)
 
-  cat("\n\n###", eda_var, " {data-height=475} \n\n")
+  data_height <- 475
+
+  if (!is.null(target_var)) data_height <- data_height + 475
+
+  cat("\n\n### ", eda_var, " {data-height=", data_height, "} \n\n", sep = "")
 
   # univariate table ----
   cat("<table>\n<tr>\n")
 
   if (
     is.character(df[[eda_var]]) |
-      is.factor(df[[eda_var]]) |
-      is.logical(df[[eda_var]])
+    is.factor(df[[eda_var]]) |
+    is.logical(df[[eda_var]])
   ) {
     render_uni_factor(df, eda_var)
   }
@@ -57,8 +61,7 @@ extra_eda <- function(df,
 
   # bivariate table ----
   if (!is.null(target_var)) {
-    cat("\n### {data-height=475}\n\n")
-
+    cat("<br>")
     cat("<table>\n<tr>\n")
 
     if (is.factor(df[[eda_var]])) {
@@ -86,7 +89,7 @@ extra_eda <- function(df,
 
 render_uni_character <- function(df, eda_var) {
   if (length(unique(df[[eda_var]])) == length(df[[eda_var]]) |
-    eda_var == "Member_Id_Universal") {
+      eda_var == "Member_Id_Universal") {
     cat("<td>Unique character or identifier column</td>\n")
   } else {
     if (stringr::str_detect(names(df[eda_var]), "_Id")) {
@@ -185,11 +188,27 @@ render_bi_factor <- function(df, eda_var, target_var, reference_var) {
       names_from = tidyselect::any_of(target_var),
       values_from = n
     ) %>%
-    knitr::kable() %>%
+    dplyr::mutate("{eda_var}" := paste0("**", .[[1]], "**")) %>%
+        knitr::kable(
+      col.names = c("", "&emsp; negative", "&emsp;&emsp; positive"),
+      format = "html",
+      escape = F,
+      align = "r") %>%
     print()
-  cat("</td>\n")
 
+  cat("</td>\n")
   cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+
+  cforest_bi_perf_plot <- plot_cforest_bi_perf(df, eda_var, target_var = target_var)
+  if (cforest_bi_perf_plot != "") {
+    cat("<img src='", cforest_bi_perf_plot, "'>", sep = "")
+  } else {
+    cat("Plot not available")
+  }
+
+  cat("</td>\n")
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+
   conditional_distribution_plot <- plot_conditional_distribution(df, eda_var, target_var)
   if (conditional_distribution_plot != "") {
     cat("<img src='", conditional_distribution_plot, "'>", sep = "")
@@ -200,7 +219,6 @@ render_bi_factor <- function(df, eda_var, target_var, reference_var) {
 
   reference_var %>%
     purrr::walk(~ render_conditional_distribution_by_category(df, eda_var, target_var, reference_var = .x))
-
 
   # cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
   # conditional_distribution_by_category_plot <-
@@ -236,13 +254,15 @@ render_bi_continuous <- function(df, eda_var, target_var, reference_var) {
   cat("<td width = '250px' style='vertical-align: text-top;'>\n")
   cat("**", eda_var, " ~ ", target_var, "**\n\n", sep = "")
 
-  dlookr::relate(dlookr::target_by(df, target_var), eda_var) %>%
+  summary_table <-
+    dlookr::relate(dlookr::target_by(df, target_var), eda_var) %>%
     dplyr::select(
       target,
       n,
       na,
       p00,
       mean,
+      median = p50,
       p50,
       p90,
       p95,
@@ -253,41 +273,44 @@ render_bi_continuous <- function(df, eda_var, target_var, reference_var) {
       na = curios::alignx_n(na),
       p00 = curios::alignx_n(curios::roundx_n(p00)),
       mean = curios::alignx_n(curios::roundx_n(mean)),
-      median = curios::alignx_n(curios::roundx_n(p50)),
+      median = curios::alignx_n(curios::roundx_n(median)),
       p90 = curios::alignx_n(curios::roundx_n(p90)),
       p95 = curios::alignx_n(curios::roundx_n(p95)),
       p100 = curios::alignx_n(curios::roundx_n(p100))
     ) %>%
     t() %>%
-    .[-1,] %>%
-    #     as.data.frame() %>%
-    # tibble::rownames_to_column() %>%
-    # dplyr::slice(-1) %>%
-    knitr::kable(
-      col.names = c("&emsp; negative", "&emsp;&emsp; positive", "&emsp;&emsp;&emsp; total &emsp;"),
-      format = "html",
-      escape = F,
-      align = "r") %>%
+    .[-1,]
+
+  row.names(summary_table) <- paste0("**", row.names(summary_table), "**")
+
+  knitr::kable(
+    summary_table,
+    col.names = c("&emsp; negative", "&emsp;&emsp; positive", "&emsp;&emsp;&emsp; total &emsp;"),
+    format = "html",
+    escape = F,
+    align = "r") %>%
     print()
 
   cat("</td>\n")
-
   cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
-  auc_pd_plot <- plot_auc_pd(df, eda_var, target_var = target_var)
-  if (auc_pd_plot != "") {
-    cat("<img src='", auc_pd_plot, "'>", sep = "")
+
+  cforest_bi_perf_plot <- plot_cforest_bi_perf(df, eda_var, target_var = target_var)
+  if (cforest_bi_perf_plot != "") {
+    cat("<img src='", cforest_bi_perf_plot, "'>", sep = "")
   } else {
     cat("Plot not available")
   }
-  cat("</td>\n")
 
+  cat("</td>\n")
   cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+
   conditional_distribution_plot <- plot_conditional_distribution(df, eda_var, target_var)
   if (conditional_distribution_plot != "") {
     cat("<img src='", conditional_distribution_plot, "'>", sep = "")
   } else {
     cat("Plot not available")
   }
+
   cat("</td>\n")
 
   reference_var %>%
