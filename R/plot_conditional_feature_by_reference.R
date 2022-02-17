@@ -43,8 +43,8 @@ plot_conditional_feature_by_reference <- function(df,
     ) +
     ggplot2::geom_point() +
     ggplot2::geom_smooth() +
-    ggplot2::scale_color_manual(values = c("red", "black")) +
-    ggplot2::scale_fill_manual(values = c("red", "black")) +
+    ggplot2::scale_color_manual(values = c("black", "red")) +
+    ggplot2::scale_fill_manual(values = c("black", "red")) +
     ggplot2::theme_minimal() +
     ggplot2::theme(legend.position = "bottom")
 

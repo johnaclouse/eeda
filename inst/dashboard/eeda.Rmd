@@ -1,0 +1,44 @@
+---
+title: "eeda demonstration dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: bootstrap
+    orientation: columns
+    vertical_layout: scroll
+    source: embed
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(knitr)
+library(eeda)
+
+target_var <- "target"
+reference_var <- c("key_age", "key_recency", "key_frequency", "key_monetary")
+study_variables <-
+  names(eeda_test_data %>%
+    dplyr::select(-tidyselect::any_of(c(target_var))))
+```
+
+```{r results="asis"}
+curios::add_custom_style()
+```
+
+```{r results="asis"}
+eeda::extra_eda(eeda_test_data,
+  eda_var = "target",
+  menu_title = "Univariate"
+)
+```
+
+```{r results="asis"}
+study_variables %>%
+  furrr::future_walk(~ eeda::extra_eda(eeda_test_data,
+    eda_var = .x,
+    target_var = target_var,
+    reference_var = reference_var,
+    menu_title = "Bivariate"
+  ),
+  .options = furrr::furrr_options(seed = NULL)
+  )
+```

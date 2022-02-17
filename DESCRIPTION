@@ -33,16 +33,19 @@ Imports:
     grid,
     kableExtra,
     knitr,
+    lares,
     magrittr,
     party,
     pROC,
     purrr,
+    rlang,
     scales,
     stats,
     stringr,
     tibble,
     tidyr,
-    tidyselect
+    tidyselect,
+    VIM
 URL: https://github.com/johnaclouse/eeda
 BugReports: https://github.com/johnaclouse/eeda/issues
 Depends: 

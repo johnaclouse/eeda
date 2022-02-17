@@ -390,10 +390,7 @@ plot_conditional_distribution <- function(df,
       ggplot2::scale_color_manual(values = plot_colors) +
       ggplot2::scale_fill_manual(values = plot_colors) +
       ggplot2::labs(
-        title = glue::glue(
-          "{caption_data$feature} ~ {target_var}
-        Median, CI, and outliers"
-        ),
+        title = "Median, CI, and outliers",
         caption = glue::glue("n = {scales::comma(caption_data$n)}
                            effect size (r_rank_biserial) = {caption_data$r_rank_biserial}
                            {scales::percent(caption_data$CI)} CI \\

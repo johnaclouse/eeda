@@ -4,19 +4,20 @@
 #' plots in a temporary folder. The function is intended to be run from within a
 #' R Markdown of flexdashboad document in a code chunk with results="asis"
 #' @param df a dataframe
-#' @param eda_var character name of the column upon which the extra
-#'   exploratory data analysis will be performed
-#' @param target_var character name of the column used for conditional
-#'   analysis
+#' @param eda_var character name of the column upon which the extra exploratory
+#'   data analysis will be performed
+#' @param target_var character name of the column used for conditional analysis
 #' @param reference_var a numeric continuous valued vector to be plotted as
-#'   x-axis reference for comparison of \code{eda_var} by
-#'   \code{target_var}
+#'   x-axis reference for comparison of \code{eda_var} by \code{target_var}
+#' @param menu_title character title under which the individual exploratory data
+#'   analysis pages will be linked in the dashboard.
 #' @param discrete_cutoff numerical if the \code{eda_var} has less than
-#'   \code{discrete_cutoff} distinct levels, the \code{eda_var} will be
-#'   treated like a factor.
+#'   \code{discrete_cutoff} distinct levels, the \code{eda_var} will be treated
+#'   like a factor.
 #'
 #' @return returns html containing css, summaries, and graphs for included
 #'   analysis.
+#' @importFrom rlang :=
 #' @export
 #'
 #' @examples
@@ -25,10 +26,17 @@ extra_eda <- function(df,
                       eda_var,
                       target_var = NULL,
                       reference_var = NULL,
+                      menu_title = "EDA",
                       discrete_cutoff = 10) {
   add_eeda_style()
 
   message("Processing extra EDA for: ", eda_var)
+
+  cat(
+    glue::glue(
+      "\n\n# {eda_var} {{data-navmenu={menu_title}}}\n\n"
+    )
+  )
 
   data_height <- 475
 
@@ -82,6 +90,13 @@ extra_eda <- function(df,
         render_bi_continuous(df, eda_var, target_var, reference_var)
       }
     }
+    cat("</tr>\n</table>\n")
+    cat("<br>")
+    cat("<table>\n<tr>\n")
+    render_bi_cross_correlation(df, eda_var, target_var, reference_var)
+    render_bi_x2y(df, eda_var, target_var, reference_var)
+    render_bi_missing_by_target(df, eda_var, target_var, reference_var)
+    render_bi_aggregated_missing(df, eda_var, target_var, reference_var)
     cat("</tr>\n</table>\n")
   }
 }
@@ -178,8 +193,14 @@ render_uni_discrete <- function(df, eda_var) {
 
 render_bi_factor <- function(df, eda_var, target_var, reference_var) {
   n <- NULL
+  # div <- if (nrow(unique(x)) > 15) {
   cat("<td style='vertical-align: text-top;'>\n")
   cat("**", eda_var, " ~ ", target_var, "**\n\n", sep = "")
+  cat("<div style = 'overflow-y: scroll; height:360px;'>")
+  # } else {
+  #   "<div>"
+  # }
+  html_table <-
   df %>%
     dplyr::select(tidyselect::any_of(c(eda_var, target_var))) %>%
     dplyr::group_by(dplyr::across(1:2)) %>%
@@ -188,13 +209,19 @@ render_bi_factor <- function(df, eda_var, target_var, reference_var) {
       names_from = tidyselect::any_of(target_var),
       values_from = n
     ) %>%
-    dplyr::mutate("{eda_var}" := paste0("**", .[[1]], "**")) %>%
-        knitr::kable(
-      col.names = c("", "&emsp; negative", "&emsp;&emsp; positive"),
-      format = "html",
-      escape = F,
-      align = "r") %>%
-    print()
+    dplyr::mutate({{eda_var}} := paste0("**", .[[1]], "**"),
+                  spacer = "")
+
+  html_table <- knitr::kable(html_table,
+                             col.names = c("", "negative", "positive", ""),
+                             format = "html",
+                             escape = F,
+                             align = "r") %>%
+    # kableExtra::column_spec(1, width = "30em") %>%
+    # kableExtra::column_spec(c(2), width_min = "3em") %>%
+    kableExtra::column_spec(c(3), width_min = "5em") %>%
+    kableExtra::column_spec(c(4), width_min = "0.5em")
+  cat(html_table, "</div>\n")
 
   cat("</td>\n")
   cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
@@ -249,7 +276,7 @@ render_conditional_distribution_by_category <- function(df, eda_var, target_var,
 
 render_bi_continuous <- function(df, eda_var, target_var, reference_var) {
   # R CMD check
-  target <- n <- na <- p00 <- p50 <- p90 <- p95 <- p100 <- NULL
+  target <- n <- na <- p00 <- p50 <- median <- p90 <- p95 <- p100 <- NULL
 
   cat("<td width = '250px' style='vertical-align: text-top;'>\n")
   cat("**", eda_var, " ~ ", target_var, "**\n\n", sep = "")
@@ -328,3 +355,44 @@ render_conditional_feature_by_reference <- function(df, eda_var, target_var, ref
   }
   cat("</td>\n")
 }
+
+
+render_bi_cross_correlation <- function(df, eda_var, target_var, reference_var) {
+  cat("<td style='padding-left: 0em; vertical-align:top;'>\n")
+  cat("<img src='",
+      plot_cross_correlations(df, eda_var, target_var, reference_var),
+      "'>", sep = "")
+  cat("</td>\n")
+}
+
+render_bi_x2y <- function(df, eda_var, target_var, reference_var) {
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+  cat("<img src='",
+      plot_x2y(df, eda_var, target_var, reference_var),
+      "'>", sep = "")
+  cat("</td>\n")
+}
+
+render_bi_aggregated_missing <- function(df, eda_var, target_var, reference_var) {
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+  cat("<img src='",
+      plot_aggregated_missing(df, eda_var, target_var, reference_var),
+      "'>", sep = "")
+  cat("</td>\n")
+}
+
+render_bi_missing_by_target <- function(df, eda_var, target_var, reference_var) {
+  cat("<td style='padding-left: 1em; vertical-align:top;'>\n")
+  cat("<img src='",
+      plot_missing_by_target(df, eda_var, target_var, reference_var),
+      "'>", sep = "")
+  cat("</td>\n")
+}
+
+
+
+
+
+
+
+

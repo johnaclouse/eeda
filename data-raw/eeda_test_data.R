@@ -1,6 +1,6 @@
 # setup ----
 n_rows <- 2000
-set.seed(100)
+set.seed(51)
 
 create_events <- function(number_of_individuals = 100,
                           number_of_days = 365,
@@ -66,13 +66,13 @@ events <-
 
 # data set ----
 eeda_test_data <- tidyr::tibble(
-  target = factor(sample(c("positive", "negative"), n_rows, replace = TRUE, prob = c(0.1, 0.9))),
+  target = as.numeric(NA),
   key_age = round(rlnorm(n = n_rows, meanlog = 3.5, sdlog = .34), 1),
   key_recency = events$recency,
   key_frequency = events$frequency,
   key_monetary = events$monetary,
   key_rfm = events$rfm,
-  key_is_left_handed = sample(c(0, 1), n_rows, replace = TRUE, prob = c(0.9, 0.1)),
+  key_is_left_handed = as.integer(sample(c(0, 1), n_rows, replace = TRUE, prob = c(0.9, 0.1))),
   key_role = factor(sample(c("rouleur", "grimpeur", "puncheur", "sprinteurs", "domestique", "gc"), n_rows, replace = TRUE, prob = c(1, 3, 1, 1, 4, 1))),
   eg_factor_4 = factor(sample(c("dragon", "fish", "raccoon", "dog"), n_rows, replace = TRUE, prob = c(0.3, 0.3, 0.3, 0.1))),
   eg_factor_4_na = eg_factor_4,
@@ -80,7 +80,7 @@ eeda_test_data <- tidyr::tibble(
   eg_factor_12_na = eg_factor_12,
   eg_factor_50 = factor(sample(state.name, n_rows, replace = TRUE)),
   eg_factor_50_na = eg_factor_50,
-  eg_binary = sample(c(0, 1), n_rows, replace = TRUE),
+  eg_binary = as.integer(sample(c(0, 1), n_rows, replace = TRUE)),
   eg_binary_na = eg_binary,
   eg_logical = sample(c(FALSE, TRUE), n_rows, replace = TRUE),
   eg_logical_na = eg_logical,
@@ -88,9 +88,9 @@ eeda_test_data <- tidyr::tibble(
   eg_continuous_na = eg_continuous,
   eg_cluster = sample(10*(1:7), n_rows, replace = TRUE) + runif(n_rows),
   eg_cluster_na = eg_cluster,
-  eg_integer_7 = sample(c(47, 53, 59, 61, 67, 71, 73), n_rows, replace = TRUE),
+  eg_integer_7 = as.integer(sample(c(47, 53, 59, 61, 67, 71, 73), n_rows, replace = TRUE)),
   eg_integer_7_na = eg_integer_7,
-  eg_integer_50 = sample(1:50, n_rows, replace = TRUE),
+  eg_integer_50 = as.integer(sample(1:50, n_rows, replace = TRUE)),
   eg_integer_50_na = eg_integer_50,
   eg_character = sample(ids::adjective_animal(n = 1500, style = "title"), n_rows, replace = TRUE),
   eg_character_na = eg_character,
@@ -101,19 +101,21 @@ eeda_test_data <- tidyr::tibble(
 )
 
 
-
 # modify data ----
 eeda_test_data <- eeda_test_data %>%
   dplyr::mutate(
-    # create association between eg_factor_4 and target and between eg_factor_4 and key_age
-    eg_factor_4 = factor(ifelse(target == "positive" & key_age > 40, "dragon", as.character(eg_factor_4))),
-    target = factor(ifelse(eg_factor_4 == "dog", "negative", as.character(target))),
-    # create association between eg_continous and key_age
+    # create associations between variables
+    # eg_factor_4 = factor(dplyr::if_else(key_age > 50 & runif(1) > 0.3, "dragon", as.character(eg_factor_4))),
+    # eg_factor_4 = factor(dplyr::if_else(target == "positive" & runif(1) > 0.2, "dragon", as.character(eg_factor_4))),
     eg_continuous = runif(n_rows) * 100 + 10 * pmin(key_age, 45)^.53,
 
-    # create association between eg_continous and target == Positive
-    eg_continuous = eg_continuous + ifelse(target == "positive", 30, 0),
-
+    # create target relationships
+    target = runif(n = n_rows),
+    target = target / 2,
+    target = target + (key_age - 50) / 100,
+    target = target + dplyr::if_else(runif(n_rows) > 0.4, eg_continuous / 2000, 0),
+    target = target + dplyr::if_else(runif(n_rows) > 0.5 & eg_factor_4 == "dragon", 0.2, 0),
+    target = factor(dplyr::if_else(target > 0.5, "positive", "negative")),
     # add NA values
     eg_continuous_na = replace(eg_continuous, sample(1:n_rows, 200), NA),
     eg_cluster_na = replace(eg_cluster, sample(1:n_rows, 200), NA),
@@ -126,10 +128,6 @@ eeda_test_data <- eeda_test_data %>%
     eg_character_na = replace(eg_character, sample(1:nrow(eeda_test_data), 200), NA),
     eg_long_character_na = replace(eg_long_character, sample(1:nrow(eeda_test_data), 200), NA),
     eg_date_na = replace(eg_date, sample(1:nrow(eeda_test_data), 200), NA)
-
-    # calculate key_rfm
-    # key_rfm =
-    #   quantile()
   )
 
 
