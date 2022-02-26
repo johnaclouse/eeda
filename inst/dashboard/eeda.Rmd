@@ -32,8 +32,9 @@ eeda::extra_eda(eeda_test_data,
 ```
 
 ```{r results="asis"}
-study_variables %>%
-  furrr::future_walk(~ eeda::extra_eda(eeda_test_data,
+# study_variables %>%
+"eg_factor_50" %>% 
+  furrr::future_walk(~ eeda::extra_eda(eeda_test_data[1:200, ],
     eda_var = .x,
     target_var = target_var,
     reference_var = reference_var,

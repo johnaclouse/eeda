@@ -9,25 +9,27 @@ extra_eda(
   eda_var,
   target_var = NULL,
   reference_var = NULL,
+  menu_title = "EDA",
   discrete_cutoff = 10
 )
 }
 \arguments{
 \item{df}{a dataframe}
 
-\item{eda_var}{character name of the column upon which the extra
-exploratory data analysis will be performed}
+\item{eda_var}{character name of the column upon which the extra exploratory
+data analysis will be performed}
 
-\item{target_var}{character name of the column used for conditional
-analysis}
+\item{target_var}{character name of the column used for conditional analysis}
 
 \item{reference_var}{a numeric continuous valued vector to be plotted as
-x-axis reference for comparison of \code{eda_var} by
-\code{target_var}}
+x-axis reference for comparison of \code{eda_var} by \code{target_var}}
+
+\item{menu_title}{character title under which the individual exploratory data
+analysis pages will be linked in the dashboard.}
 
 \item{discrete_cutoff}{numerical if the \code{eda_var} has less than
-\code{discrete_cutoff} distinct levels, the \code{eda_var} will be
-treated like a factor.}
+\code{discrete_cutoff} distinct levels, the \code{eda_var} will be treated
+like a factor.}
 }
 \value{
 returns html containing css, summaries, and graphs for included

@@ -4,6 +4,10 @@ Extra Exploratory Data Analysis
 
 # Action items
 
+- Add geospatial visual - median/mode by census tract
+
+- Add geospatial visual - incidence rate of top 20% value individuals per census tract. Top 5% and top 1%
+
 - Move alignx_n from curios to eeda
 
 - Find right home for scale_min_max
@@ -18,7 +22,7 @@ Extra Exploratory Data Analysis
 
 - Create separate targets for rfm and for broad measures
 
-- Create two vignettes: 
+- Create two simple vignettes: 
 
   - eg variables for univariate
   
