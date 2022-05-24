@@ -43,3 +43,36 @@ eeda::extra_eda(eeda_test_data,
   .options = furrr::furrr_options(seed = NULL)
   )
 ```
+
+
+
+
+```{r}
+
+eeda::extra_eda(df = 
+ left_join(data$engineered,
+            health_context_index,
+            by = "Member_Id_Universal"),
+  eda_var = "Health_Context_Index",
+  target_var = "Medical_3rd_Highest_Month",
+    reference_var = c( 
+      # "Age",
+                       # "Sex",
+                       # "Is_Minority"
+                       # "Chronic_Condition_Cnt",
+                       # "HbA1c",
+                      "HTOW_Index"
+                       # "RS_Medical_Prosp_Risk_Score",
+                       # "RS_Pharmacy_Prosp_Risk_Score",
+                       # "ED_Per_PCP1",
+                       # "Medical_3rd_Highest_Month",
+                       # "Pharmacy_3rd_Highest_Month",
+                       # "LN_SDOH_Socio_Index",
+                       # "LN_SDOH_Readmission_Probability",
+                       # "LN_SDOH_Medication_Adherence_Rate",
+                       # "LN_SDOH_Motivation_Level"
+                       ),
+  menu_title = "Bivariate"
+)
+```
+

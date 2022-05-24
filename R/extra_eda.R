@@ -30,7 +30,7 @@ extra_eda <- function(df,
                       discrete_cutoff = 10) {
   add_eeda_style()
 
-  message("Processing extra EDA for: ", eda_var)
+  # message("Processing extra EDA for: ", eda_var)
 
   cat(
     glue::glue(

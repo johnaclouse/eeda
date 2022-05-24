@@ -9,7 +9,7 @@ plot_conditional_feature_by_reference(
   eda_var,
   target_var,
   reference_var,
-  width = 225,
+  width = 450,
   height = 450
 )
 }

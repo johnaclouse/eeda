@@ -17,11 +17,11 @@
 #' #                                          target_var = "target",
 #' #                                          reference_var = "key_age")
 plot_conditional_feature_by_reference <- function(df,
-                                                      eda_var,
-                                                      target_var,
-                                                      reference_var,
-                                                      width = 225,
-                                                      height = 450) {
+                                                  eda_var,
+                                                  target_var,
+                                                  reference_var,
+                                                  width = 450,
+                                                  height = 450) {
   cluster <- value <- feature_level <- target_level <- reference <- NULL
 
   png_file <- ""
@@ -43,6 +43,11 @@ plot_conditional_feature_by_reference <- function(df,
     ) +
     ggplot2::geom_point() +
     ggplot2::geom_smooth() +
+    # added 3/28
+    {if (is.numeric(plot_data$referencevar) &&
+         max(plot_data$referencevar) / min(plot_data$referencevar) > 10)
+      ggplot2::scale_x_continuous(trans = "log1p",
+                                  labels = scales::comma_format())} +
     ggplot2::scale_color_manual(values = c("black", "red")) +
     ggplot2::scale_fill_manual(values = c("black", "red")) +
     ggplot2::theme_minimal() +
