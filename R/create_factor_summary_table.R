@@ -1,9 +1,21 @@
 create_factor_summary_table <- function (x) {
   # binding variable just to keep R CMD Check from seeing NSE as global variables
   n <- NULL
-  x_table <- tidyr::as_tibble(table(x))
-  x_table$x <- forcats::fct_reorder(x_table$x, x_table$n, .desc = T)
-  x_table <- dplyr::arrange(x_table, dplyr::desc(n))
+
+  # x_table <- tidyr::as_tibble(table(x))
+
+
+  x_table <-
+    x %>%
+    dplyr::group_by(!!rlang::sym(names(x))) %>%
+    dplyr::summarize(n = dplyr::n()) %>%
+    dplyr::mutate(!!rlang::sym(names(x)) :=
+                    forcats::fct_reorder(!!rlang::sym(names(x)), n, .desc = T)
+    ) %>%
+    dplyr::arrange(dplyr::desc(n))
+
+  # x_table$x <- forcats::fct_reorder(x_table$x, x_table$n, .desc = T)
+  # x_table <- dplyr::arrange(x_table, dplyr::desc(n))
   n_xzv <-
     dplyr::if_else(
       caret::nearZeroVar(x, saveMetrics = TRUE)$nzv,
