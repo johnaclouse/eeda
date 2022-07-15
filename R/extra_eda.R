@@ -34,7 +34,7 @@ extra_eda <- function(df,
 
   cat(
     glue::glue(
-      "\n\n# {eda_var} {{data-navmenu={menu_title}}}\n\n"
+      "\n\n# {eda_var} {{data-navmenu='{menu_title}'}}\n\n"
     )
   )
 

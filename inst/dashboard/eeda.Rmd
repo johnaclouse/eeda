@@ -11,6 +11,7 @@ output:
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(knitr)
+library(tidyverse)
 library(eeda)
 
 target_var <- "target"
